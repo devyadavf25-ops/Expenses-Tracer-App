@@ -4,6 +4,7 @@
 /* ===== CSS Variables ===== */
 :root {
   --bg-base: #030d1a;
+  --bg-sidebar: #060f1c;
   --bg-card: #0a1e30;
   --bg-card-hover: #0d2540;
   --border: rgba(0, 232, 122, 0.12);
@@ -14,7 +15,26 @@
   --text-primary: #d0f0e0;
   --text-secondary: #5a8a7a;
   --text-muted: #3a6a5a;
+  --chart-grid: rgba(255, 255, 255, 0.05);
   --sidebar-w: 260px;
+  --bg-gradient: linear-gradient(135deg, #030d1a 0%, #051224 50%, #071830 100%);
+}
+
+[data-theme='light'] {
+  --bg-base: #f8fafc;
+  --bg-sidebar: #ffffff;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f1f5f9;
+  --border: rgba(0, 232, 122, 0.15);
+  --border-hover: rgba(0, 232, 122, 0.3);
+  --accent: #10b981;
+  --accent-dim: rgba(16, 185, 129, 0.1);
+  --accent-glow: rgba(16, 185, 129, 0.15);
+  --text-primary: #1e293b;
+  --text-secondary: #64748b;
+  --text-muted: #94a3b8;
+  --chart-grid: rgba(0, 0, 0, 0.05);
+  --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
 }
 
 /* ===== Reset ===== */
@@ -23,9 +43,10 @@ html { scroll-behavior: smooth; }
 
 body {
   font-family: 'Inter', 'Segoe UI', system-ui, sans-serif;
-  background: linear-gradient(135deg, #030d1a 0%, #051224 50%, #071830 100%);
+  background: var(--bg-gradient);
   color: var(--text-primary);
   min-height: 100vh;
+  transition: background 0.3s ease, color 0.3s ease;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

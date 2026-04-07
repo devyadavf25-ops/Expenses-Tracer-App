@@ -44,6 +44,16 @@ const UserIcon = () => (
     <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
   </svg>
 );
+const SunIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="5" /><line x1="12" y1="1" x2="12" y2="3" /><line x1="12" y1="21" x2="12" y2="23" /><line x1="4.22" y1="4.22" x2="5.64" y2="5.64" /><line x1="18.36" y1="18.36" x2="19.78" y2="19.78" /><line x1="1" y1="12" x2="3" y2="12" /><line x1="21" y1="12" x2="23" y2="12" /><line x1="4.22" y1="19.78" x2="5.64" y2="18.36" /><line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+  </svg>
+);
+const MoonIcon = () => (
+  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z" />
+  </svg>
+);
 
 const NAV_ITEMS = [
   { path: '/', label: 'Dashboard', Icon: HomeIcon },
@@ -56,6 +66,7 @@ const Sidebar = () => {
   const { pathname } = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+  const { toggleTheme, isDark } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
 
   const handleLogout = () => { logout(); navigate('/login'); };
@@ -65,7 +76,7 @@ const Sidebar = () => {
       {/* Logo */}
       <div style={styles.logoArea} onClick={() => { navigate('/'); setMobileOpen(false); }}>
         <div style={styles.logoIcon}>
-          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#00e87a" strokeWidth="2.5" strokeLinecap="round">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round">
             <path d="M12 2L2 7l10 5 10-5-10-5z" />
             <path d="M2 17l10 5 10-5" />
             <path d="M2 12l10 5 10-5" />
@@ -94,8 +105,8 @@ const Sidebar = () => {
                 ...styles.navItem,
                 ...(isActive ? styles.navItemActive : {}),
               }}
-              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = 'rgba(0,232,122,0.06)'; e.currentTarget.style.color = '#a0e8c0'; } }}
-              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#5a8a7a'; } }}
+              onMouseEnter={e => { if (!isActive) { e.currentTarget.style.background = 'var(--accent-dim)'; e.currentTarget.style.color = 'var(--accent)'; } }}
+              onMouseLeave={e => { if (!isActive) { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-secondary)'; } }}
             >
               <span style={{ ...styles.navIcon, ...(isActive ? styles.navIconActive : {}) }}>
                 <Icon />
@@ -110,13 +121,29 @@ const Sidebar = () => {
       {/* Spacer */}
       <div style={{ flex: 1 }} />
 
+      {/* Theme Toggle */}
+      <div style={{ padding: '0 16px 12px' }}>
+        <button
+          onClick={toggleTheme}
+          style={styles.themeToggle}
+          onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
+          onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
+        >
+          <div style={{ ...styles.themeThumb, transform: isDark ? 'translateX(0)' : 'translateX(100%)' }}>
+            {isDark ? <MoonIcon /> : <SunIcon />}
+          </div>
+          <span style={{ position: 'absolute', left: 12, opacity: isDark ? 1 : 0.3, transition: '0.3s' }}><MoonIcon /></span>
+          <span style={{ position: 'absolute', right: 12, opacity: isDark ? 0.3 : 1, transition: '0.3s' }}><SunIcon /></span>
+        </button>
+      </div>
+
       {/* Quick Add Button */}
       <div style={{ padding: '0 16px 16px' }}>
         <button
           onClick={() => { window.dispatchEvent(new CustomEvent('open-expense-modal')); setMobileOpen(false); }}
           style={styles.addBtn}
-          onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 28px rgba(0,232,122,0.4)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
-          onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 4px 16px rgba(0,232,122,0.25)'; e.currentTarget.style.transform = 'translateY(0)'; }}
+          onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 28px var(--accent-shadow)'; e.currentTarget.style.transform = 'translateY(-1px)'; }}
+          onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 4px 16px var(--accent-shadow)'; e.currentTarget.style.transform = 'translateY(0)'; }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
           Add Transaction
@@ -138,7 +165,7 @@ const Sidebar = () => {
         onClick={handleLogout}
         style={styles.logoutBtn}
         onMouseEnter={e => { e.currentTarget.style.background = 'rgba(239,68,68,0.08)'; e.currentTarget.style.color = '#f87171'; e.currentTarget.style.borderColor = 'rgba(239,68,68,0.2)'; }}
-        onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = '#5a8a7a'; e.currentTarget.style.borderColor = 'transparent'; }}
+        onMouseLeave={e => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'transparent'; }}
       >
         <LogoutIcon />
         <span>Sign Out</span>
@@ -291,8 +318,33 @@ const styles = {
     cursor: 'pointer', display: 'flex',
     alignItems: 'center', justifyContent: 'center',
     gap: 8,
-    boxShadow: '0 4px 16px rgba(0,232,122,0.25)',
+    boxShadow: '0 4px 16px var(--accent-glow)',
     transition: 'all 0.2s ease',
+  },
+  themeToggle: {
+    width: '100%', height: 44,
+    background: 'var(--bg-card)',
+    border: '1px solid var(--border)',
+    borderRadius: 12,
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    position: 'relative',
+    padding: '0 4px',
+    transition: 'all 0.3s ease',
+    color: 'var(--text-secondary)',
+  },
+  themeThumb: {
+    width: '50%', height: 34,
+    background: 'var(--accent-dim)',
+    borderRadius: 10,
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    color: 'var(--accent)',
+    transition: 'all 0.4s cubic-bezier(0.4, 0, 0.2, 1)',
+    zIndex: 2,
+    boxShadow: '0 2px 8px rgba(0,0,0,0.2)',
   },
   userArea: {
     display: 'flex', alignItems: 'center', gap: 10,

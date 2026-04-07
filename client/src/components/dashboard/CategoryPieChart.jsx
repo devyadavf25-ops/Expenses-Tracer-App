@@ -6,11 +6,11 @@ const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     return (
       <div style={{
-        background: '#0a1e30', border: '1px solid rgba(0,232,122,0.2)',
+        background: 'var(--bg-card)', border: '1px solid var(--border)',
         borderRadius: 12, padding: '10px 14px',
-        boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
+        boxShadow: '0 8px 24px rgba(0,0,0,0.2)',
       }}>
-        <p style={{ fontSize: 12, color: '#5a8a7a', margin: '0 0 4px' }}>{payload[0].name}</p>
+        <p style={{ fontSize: 12, color: 'var(--text-secondary)', margin: '0 0 4px' }}>{payload[0].name}</p>
         <p style={{ fontSize: 15, fontWeight: 800, margin: 0, color: payload[0].payload.fill }}>
           NPR {payload[0].value?.toLocaleString()}
         </p>
@@ -22,14 +22,14 @@ const CustomTooltip = ({ active, payload }) => {
 
 const CategoryPieChart = ({ data }) => (
   <div style={{
-    background: 'linear-gradient(160deg, #0a1e30 0%, #071525 100%)',
-    border: '1px solid rgba(0,232,122,0.12)',
+    background: 'var(--bg-card)',
+    border: '1px solid var(--border)',
     borderRadius: 20, padding: '24px',
     height: '100%', minHeight: 320,
   }}>
     <div style={{ marginBottom: 16 }}>
-      <h3 style={{ fontSize: 16, fontWeight: 800, color: '#d0f0e0', margin: '0 0 4px' }}>Allocation</h3>
-      <p style={{ fontSize: 10, fontWeight: 600, color: '#3a6a5a', margin: 0, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Category Split</p>
+      <h3 style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 4px' }}>Allocation</h3>
+      <p style={{ fontSize: 10, fontWeight: 600, color: 'var(--text-muted)', margin: 0, textTransform: 'uppercase', letterSpacing: '0.1em' }}>Category Split</p>
     </div>
 
     {data.length === 0 ? (
@@ -63,13 +63,13 @@ const CategoryPieChart = ({ data }) => (
                 <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: 7 }}>
                     <div style={{ width: 8, height: 8, borderRadius: '50%', background: color, flexShrink: 0 }} />
-                    <span style={{ fontSize: 11, fontWeight: 600, color: '#5a8a7a', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{item.name}</span>
+                    <span style={{ fontSize: 11, fontWeight: 600, color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.07em' }}>{item.name}</span>
                   </div>
-                  <span style={{ fontSize: 11, fontWeight: 800, color: '#d0f0e0' }}>
-                    {pct}% <span style={{ color: '#3a6a5a', fontWeight: 600 }}>· NPR {item.value?.toLocaleString()}</span>
+                  <span style={{ fontSize: 11, fontWeight: 800, color: 'var(--text-primary)' }}>
+                    {pct}% <span style={{ color: 'var(--text-muted)', fontWeight: 600 }}>· NPR {item.value?.toLocaleString()}</span>
                   </span>
                 </div>
-                <div style={{ height: 3, background: 'rgba(255,255,255,0.05)', borderRadius: 3 }}>
+                <div style={{ height: 3, background: 'var(--accent-dim)', borderRadius: 3 }}>
                   <div style={{ height: '100%', width: `${pct}%`, background: color, borderRadius: 3, transition: 'width 1s ease' }} />
                 </div>
               </div>
