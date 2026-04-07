@@ -1,159 +1,182 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
-import { HiOutlineUser, HiOutlineCurrencyDollar, HiOutlineFlag } from 'react-icons/hi';
 import { toInputDate } from '../utils/dateUtils';
+
+const UserIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e87a" strokeWidth="2" strokeLinecap="round">
+    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>
+  </svg>
+);
+const BudgetIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#38bdf8" strokeWidth="2" strokeLinecap="round">
+    <line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+  </svg>
+);
+const GoalIcon = () => (
+  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#a78bfa" strokeWidth="2" strokeLinecap="round">
+    <circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>
+  </svg>
+);
+
+const Section = ({ icon, title, subtitle, children }) => (
+  <div style={{
+    background: 'linear-gradient(160deg, #0a1e30 0%, #071525 100%)',
+    border: '1px solid rgba(0,232,122,0.12)',
+    borderRadius: 20, padding: '28px 28px',
+  }}>
+    <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24 }}>
+      <div style={{
+        width: 48, height: 48, borderRadius: 14,
+        background: 'rgba(0,232,122,0.07)',
+        border: '1px solid rgba(0,232,122,0.18)',
+        display: 'flex', alignItems: 'center', justifyContent: 'center',
+        flexShrink: 0,
+      }}>{icon}</div>
+      <div>
+        <h2 style={{ fontSize: 16, fontWeight: 800, color: '#d0f0e0', margin: '0 0 3px' }}>{title}</h2>
+        <p style={{ fontSize: 11, color: '#3a6a5a', margin: 0, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{subtitle}</p>
+      </div>
+    </div>
+    {children}
+  </div>
+);
+
+const FieldRow = ({ label, children }) => (
+  <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
+    <label style={{ fontSize: 11, fontWeight: 700, color: '#3a6a5a', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{label}</label>
+    {children}
+  </div>
+);
+
+const inputStyle = {
+  background: 'rgba(0,232,122,0.04)',
+  border: '1.5px solid rgba(0,232,122,0.12)',
+  borderRadius: 12, padding: '0 16px',
+  height: 48, color: '#d0f0e0',
+  fontSize: 14, fontWeight: 500,
+  outline: 'none', width: '100%',
+  caretColor: '#00e87a',
+  transition: 'all 0.2s',
+};
+
+const SaveBtn = ({ loading, text, loadingText, color = '#00c866' }) => (
+  <button type="submit" disabled={loading} style={{
+    padding: '0 28px', height: 48, borderRadius: 12,
+    background: `linear-gradient(135deg, ${color}, ${color}cc)`,
+    border: 'none', color: '#fff', fontSize: 13, fontWeight: 700,
+    cursor: loading ? 'not-allowed' : 'pointer',
+    opacity: loading ? 0.7 : 1,
+    boxShadow: `0 4px 16px ${color}44`,
+    transition: 'all 0.2s', flexShrink: 0,
+  }}
+    onMouseEnter={e => { if (!loading) e.currentTarget.style.transform = 'translateY(-1px)'; }}
+    onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; }}
+  >
+    {loading ? loadingText : text}
+  </button>
+);
 
 const Settings = () => {
   const { user, updateUserSettings } = useAuth();
-  
-  // State for Budget
   const [budget, setBudget] = useState(user?.monthlyBudget || '');
   const [savingBudget, setSavingBudget] = useState(false);
-
-  // State for Goal
   const [goalAmount, setGoalAmount] = useState(user?.savingsGoal?.targetAmount || '');
-  const [goalDate, setGoalDate] = useState(
-    user?.savingsGoal?.targetDate ? toInputDate(user.savingsGoal.targetDate) : ''
-  );
+  const [goalDate, setGoalDate] = useState(user?.savingsGoal?.targetDate ? toInputDate(user.savingsGoal.targetDate) : '');
   const [savingGoal, setSavingGoal] = useState(false);
 
   const handleUpdateBudget = async (e) => {
-    e.preventDefault();
-    setSavingBudget(true);
+    e.preventDefault(); setSavingBudget(true);
     await updateUserSettings({ monthlyBudget: Number(budget) });
     setSavingBudget(false);
   };
-
   const handleUpdateGoal = async (e) => {
-    e.preventDefault();
-    setSavingGoal(true);
-    await updateUserSettings({
-      savingsGoal: {
-        ...user.savingsGoal,
-        targetAmount: Number(goalAmount),
-        targetDate: goalDate,
-      }
-    });
+    e.preventDefault(); setSavingGoal(true);
+    await updateUserSettings({ savingsGoal: { ...user.savingsGoal, targetAmount: Number(goalAmount), targetDate: goalDate } });
     setSavingGoal(false);
   };
 
   return (
-    <div className="max-w-4xl mx-auto animate-fade-in space-y-6 lg:space-y-8">
+    <div className="animate-fade-in" style={{ maxWidth: 720, display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* Header */}
       <div>
-        <h1 className="text-3xl font-bold text-white mb-2">Settings</h1>
-        <p className="text-dark-400">Manage your profile, budgets, and savings goals.</p>
+        <h1 style={{ fontSize: 28, fontWeight: 900, color: '#d0f0e0', margin: '0 0 4px', letterSpacing: '-0.5px' }}>Settings</h1>
+        <p style={{ fontSize: 11, color: '#3a6a5a', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>
+          Profile & Financial Preferences
+        </p>
       </div>
 
-      {/* Profile Info (Read Only) */}
-      <section className="glass rounded-2xl p-6 lg:p-8">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 rounded-xl bg-primary-600/20 flex items-center justify-center">
-            <HiOutlineUser className="text-primary-400" size={24} />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-white">Profile Information</h2>
-            <p className="text-sm text-dark-400">Your basic account details</p>
-          </div>
+      {/* Profile */}
+      <Section icon={<UserIcon />} title="Profile" subtitle="Your account info">
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }} className="settings-grid">
+          <style>{`@media(max-width:600px){.settings-grid{grid-template-columns:1fr !important}}`}</style>
+          <FieldRow label="Full Name">
+            <div style={{ ...inputStyle, display: 'flex', alignItems: 'center', opacity: 0.6, cursor: 'not-allowed' }}>
+              {user?.name}
+            </div>
+          </FieldRow>
+          <FieldRow label="Email Address">
+            <div style={{ ...inputStyle, display: 'flex', alignItems: 'center', opacity: 0.6, cursor: 'not-allowed', overflow: 'hidden' }}>
+              <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{user?.email}</span>
+            </div>
+          </FieldRow>
         </div>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div>
-            <label className="block text-sm font-medium text-dark-300 mb-2">Full Name</label>
-            <input type="text" value={user?.name || ''} readOnly className="input-dark bg-dark-800/50 cursor-not-allowed opacity-70" />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-dark-300 mb-2">Email Address</label>
-            <input type="email" value={user?.email || ''} readOnly className="input-dark bg-dark-800/50 cursor-not-allowed opacity-70" />
-          </div>
-        </div>
-      </section>
+        <p style={{ fontSize: 11, color: '#2a5a4a', marginTop: 12 }}>
+          🔒 Profile info cannot be changed. Contact support to update email.
+        </p>
+      </Section>
 
-      {/* Budget Limit Setup */}
-      <section className="glass rounded-2xl p-6 lg:p-8 border border-primary-500/10">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 rounded-xl bg-info-500/20 flex items-center justify-center">
-            <HiOutlineCurrencyDollar className="text-info-400" size={24} />
+      {/* Budget */}
+      <Section icon={<BudgetIcon />} title="Monthly Budget" subtitle="Spending limit per month">
+        <form onSubmit={handleUpdateBudget}>
+          <div style={{ display: 'flex', gap: 12, alignItems: 'flex-end', flexWrap: 'wrap' }}>
+            <FieldRow label={`Budget Ceiling (${user?.currency || 'NPR'})`}>
+              <input
+                type="number" min="0" step="0.01"
+                value={budget} onChange={e => setBudget(e.target.value)}
+                placeholder="e.g. 50000" required
+                style={{ ...inputStyle, width: 260 }}
+                onFocus={e => { e.target.style.borderColor = '#38bdf8'; e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.1)'; }}
+                onBlur={e => { e.target.style.borderColor = 'rgba(0,232,122,0.12)'; e.target.style.boxShadow = 'none'; }}
+              />
+            </FieldRow>
+            <SaveBtn loading={savingBudget} text="Set Budget" loadingText="Saving..." color="#38bdf8" />
           </div>
-          <div>
-            <h2 className="text-xl font-bold text-white">Monthly Budget Alert</h2>
-            <p className="text-sm text-dark-400">We'll warn you if you exceed this limit</p>
-          </div>
-        </div>
-
-        <form onSubmit={handleUpdateBudget} className="flex flex-col md:flex-row gap-4 items-end">
-          <div className="flex-1 w-full">
-            <label className="block text-sm font-medium text-dark-300 mb-2">Maximum Budget ({user?.currency})</label>
-            <input 
-              type="number" 
-              min="0" 
-              step="0.01"
-              value={budget} 
-              onChange={(e) => setBudget(e.target.value)} 
-              placeholder="e.g. 50000"
-              className="input-dark" 
-              required
-            />
-          </div>
-          <button 
-            type="submit" 
-            disabled={savingBudget}
-            className="btn-gradient px-8 min-h-[44px] w-full md:w-auto mt-4 md:mt-0 disabled:opacity-50"
-          >
-            {savingBudget ? 'Saving...' : 'Update Budget'}
-          </button>
+          {user?.monthlyBudget > 0 && (
+            <p style={{ fontSize: 12, color: '#3a6a5a', marginTop: 10 }}>
+              Current budget: <strong style={{ color: '#38bdf8' }}>{user.currency} {user.monthlyBudget.toLocaleString()}</strong> / month
+            </p>
+          )}
         </form>
-      </section>
+      </Section>
 
-      {/* Savings Goal Setup */}
-      <section className="glass rounded-2xl p-6 lg:p-8 border border-purple-500/10">
-        <div className="flex items-center gap-4 mb-6">
-          <div className="w-12 h-12 rounded-xl bg-purple-500/20 flex items-center justify-center">
-            <HiOutlineFlag className="text-purple-400" size={24} />
-          </div>
-          <div>
-            <h2 className="text-xl font-bold text-white">Savings Goal</h2>
-            <p className="text-sm text-dark-400">Track your progress toward a financial target</p>
-          </div>
-        </div>
-
-        <form onSubmit={handleUpdateGoal} className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-dark-300 mb-2">Target Amount ({user?.currency})</label>
-              <input 
-                type="number" 
-                min="0"
-                step="0.01" 
-                value={goalAmount} 
-                onChange={(e) => setGoalAmount(e.target.value)} 
-                placeholder="e.g. 100000"
-                className="input-dark" 
-                required
+      {/* Savings Goal */}
+      <Section icon={<GoalIcon />} title="Savings Goal" subtitle="Track a wealth target">
+        <form onSubmit={handleUpdateGoal} style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }} className="settings-grid">
+            <FieldRow label={`Target Amount (${user?.currency || 'NPR'})`}>
+              <input
+                type="number" min="0" step="0.01"
+                value={goalAmount} onChange={e => setGoalAmount(e.target.value)}
+                placeholder="e.g. 100000" required
+                style={inputStyle}
+                onFocus={e => { e.target.style.borderColor = '#a78bfa'; e.target.style.boxShadow = '0 0 0 3px rgba(167,139,250,0.1)'; }}
+                onBlur={e => { e.target.style.borderColor = 'rgba(0,232,122,0.12)'; e.target.style.boxShadow = 'none'; }}
               />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-dark-300 mb-2">Target Date</label>
-              <input 
-                type="date" 
-                value={goalDate} 
-                onChange={(e) => setGoalDate(e.target.value)} 
-                className="input-dark relative" 
-                required
+            </FieldRow>
+            <FieldRow label="Target Date">
+              <input
+                type="date" value={goalDate} onChange={e => setGoalDate(e.target.value)} required
+                style={{ ...inputStyle, colorScheme: 'dark' }}
+                onFocus={e => { e.target.style.borderColor = '#a78bfa'; e.target.style.boxShadow = '0 0 0 3px rgba(167,139,250,0.1)'; }}
+                onBlur={e => { e.target.style.borderColor = 'rgba(0,232,122,0.12)'; e.target.style.boxShadow = 'none'; }}
               />
-            </div>
+            </FieldRow>
           </div>
-          <div className="flex justify-end pt-2">
-            <button 
-              type="submit" 
-              disabled={savingGoal}
-              className="px-8 py-2.5 rounded-xl bg-purple-500/20 text-purple-400 hover:bg-purple-500/30 transition-colors border border-purple-500/30 font-medium disabled:opacity-50 w-full md:w-auto cursor-pointer"
-            >
-              {savingGoal ? 'Saving Goal...' : 'Set Goal'}
-            </button>
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <SaveBtn loading={savingGoal} text="Save Goal" loadingText="Saving..." color="#a78bfa" />
           </div>
         </form>
-      </section>
+      </Section>
     </div>
   );
 };

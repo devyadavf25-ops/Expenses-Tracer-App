@@ -31,7 +31,10 @@ const aiCategorize = async (req, res, next) => {
 // @access  Private
 const aiInsights = async (req, res, next) => {
   try {
-    const expenses = await Expense.find({ user: req.user._id }).sort({ date: -1 });
+    const expenses = await Expense.findAll({ 
+      where: { userId: req.user.id }, 
+      order: [['date', 'DESC']] 
+    });
 
     if (expenses.length === 0) {
       return res.status(200).json({
@@ -46,7 +49,9 @@ const aiInsights = async (req, res, next) => {
       });
     }
 
-    const result = await getSpendingInsights(expenses, req.user.currency);
+    // Convert Sequelize instances to plain JS objects for the service
+    const plainExpenses = expenses.map(e => e.toJSON());
+    const result = await getSpendingInsights(plainExpenses, req.user.currency);
 
     res.status(200).json({
       success: true,
@@ -71,9 +76,13 @@ const aiChat = async (req, res, next) => {
       });
     }
 
-    const expenses = await Expense.find({ user: req.user._id }).sort({ date: -1 });
+    const expenses = await Expense.findAll({ 
+      where: { userId: req.user.id }, 
+      order: [['date', 'DESC']] 
+    });
 
-    const result = await chatWithExpenses(message, expenses, req.user.currency);
+    const plainExpenses = expenses.map(e => e.toJSON());
+    const result = await chatWithExpenses(message, plainExpenses, req.user.currency);
 
     res.status(200).json({
       success: true,

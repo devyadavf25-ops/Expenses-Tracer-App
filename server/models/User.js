@@ -1,57 +1,77 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const { sequelize } = require('../config/db');
 const bcrypt = require('bcryptjs');
 
-const userSchema = new mongoose.Schema(
-  {
-    name: {
-      type: String,
-      required: [true, 'Please provide your name'],
-      trim: true,
-      maxlength: [50, 'Name cannot exceed 50 characters'],
-    },
-    email: {
-      type: String,
-      required: [true, 'Please provide your email'],
-      unique: true,
-      lowercase: true,
-      match: [/^\S+@\S+\.\S+$/, 'Please provide a valid email'],
-    },
-    password: {
-      type: String,
-      required: [true, 'Please provide a password'],
-      minlength: [6, 'Password must be at least 6 characters'],
-      select: false, // Don't return password in queries by default
-    },
-    currency: {
-      type: String,
-      default: 'NPR',
-    },
-    monthlyBudget: {
-      type: Number,
-      default: 0,
-    },
-    savingsGoal: {
-      targetAmount: { type: Number, default: 0 },
-      currentSaved: { type: Number, default: 0 },
-      targetDate: { type: Date },
+const User = sequelize.define('User', {
+  id: {
+    type: DataTypes.UUID,
+    defaultValue: DataTypes.UUIDV4,
+    primaryKey: true,
+  },
+  name: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: { msg: 'Please provide your name' },
+      len: [0, 50],
     },
   },
-  {
-    timestamps: true,
-  }
-);
-
-// Hash password before saving
-userSchema.pre('save', async function (next) {
-  if (!this.isModified('password')) return next();
-  const salt = await bcrypt.genSalt(12);
-  this.password = await bcrypt.hash(this.password, salt);
-  next();
+  email: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    unique: true,
+    lowercase: true,
+    validate: {
+      isEmail: { msg: 'Please provide a valid email' },
+    },
+  },
+  password: {
+    type: DataTypes.STRING,
+    allowNull: false,
+    validate: {
+      len: [6, 100],
+    },
+  },
+  currency: {
+    type: DataTypes.STRING,
+    defaultValue: 'NPR',
+  },
+  monthlyBudget: {
+    type: DataTypes.DOUBLE,
+    defaultValue: 0,
+  },
+  savingsGoal: {
+    type: DataTypes.TEXT,
+    defaultValue: JSON.stringify({ targetAmount: 0, currentSaved: 0 }),
+    get() {
+      const value = this.getDataValue('savingsGoal');
+      return value ? JSON.parse(value) : null;
+    },
+    set(value) {
+      this.setDataValue('savingsGoal', JSON.stringify(value));
+    },
+  },
+}, {
+  timestamps: true,
+  hooks: {
+    beforeCreate: async (user) => {
+      if (user.password) {
+        const salt = await bcrypt.genSalt(12);
+        user.password = await bcrypt.hash(user.password, salt);
+      }
+    },
+    beforeUpdate: async (user) => {
+      if (user.changed('password')) {
+        const salt = await bcrypt.genSalt(12);
+        user.password = await bcrypt.hash(user.password, salt);
+      }
+    },
+  },
 });
 
-// Compare entered password with hashed password
-userSchema.methods.comparePassword = async function (enteredPassword) {
+// Instance method to compare password
+User.prototype.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = User;
