@@ -104,7 +104,8 @@ const chatWithExpenses = async (message, expenses, currency = 'NPR') => {
     const reply = await runAiTask({ systemPrompt, userPrompt: message, jsonMode: false });
     return { reply };
   } catch (error) {
-    return { reply: "I'm ready to help, but I need an AI key! Please configure a GEMINI_API_KEY or OPENAI_API_KEY in your server settings." };
+    console.error("DEBUG AI CHAT ERROR:", error);
+    return { reply: `I hit a snag! Original error: ${error.message}. Please check your GEMINI_API_KEY in Render.` };
   }
 };
 
