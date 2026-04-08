@@ -1,5 +1,5 @@
 const Expense = require('../models/Expense');
-const { categorizeExpense, getSpendingInsights, chatWithExpenses } = require('../services/openaiService');
+const { categorizeExpense, getSpendingInsights, chatWithExpenses } = require('../services/aiService');
 
 // @desc    AI categorize an expense
 // @route   POST /api/ai/categorize
