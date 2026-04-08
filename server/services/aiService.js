@@ -5,16 +5,14 @@ const { CATEGORIES } = require('../models/Expense');
 // --- Provider Initialization ---
 
 const getGemini = () => {
-  // Support standard GEMINI_API_KEY, and user's specific 'gimini-api-key' spelling
-  const key = process.env.GEMINI_API_KEY || process.env['gimini-api-key'] || process.env.GEMINI_KEY;
+  const key = process.env.GEMINI_API_KEY;
   if (!key || key === 'your_gemini_api_key_here') return null;
   const genAI = new GoogleGenerativeAI(key);
   return genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 };
 
 const getOpenAI = () => {
-  // Support standard OPENAI_API_KEY and common variations
-  const key = process.env.OPENAI_API_KEY || process.env.OPENAI_KEY;
+  const key = process.env.OPENAI_API_KEY;
   if (!key || key === 'your_openai_api_key_here') return null;
   return new OpenAI({ apiKey: key });
 };

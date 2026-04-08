@@ -46,6 +46,15 @@ app.get('/api/health', (req, res) => {
   });
 });
 
+// Diagnostic route - check if keys exist (safe)
+app.get('/api/ai/check-keys', (req, res) => {
+  res.status(200).json({
+    hasGemini: !!process.env.GEMINI_API_KEY && process.env.GEMINI_API_KEY !== 'your_gemini_api_key_here',
+    hasOpenAI: !!process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== 'your_openai_api_key_here',
+    nodeEnv: process.env.NODE_ENV || 'development'
+  });
+});
+
 app.use('/api/auth', authRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/ai', aiRoutes);
