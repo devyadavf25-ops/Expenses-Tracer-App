@@ -1,8 +1,25 @@
+import { useState, useEffect } from 'react';
 import Sidebar from './Sidebar';
 import { Outlet } from 'react-router-dom';
 import Chatbot from '../ai/Chatbot';
+import ExpenseFormModal from '../expenses/ExpenseFormModal';
 
 const Layout = () => {
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    const handleOpenModal = () => setShowModal(true);
+    window.addEventListener('open-expense-modal', handleOpenModal);
+    return () => window.removeEventListener('open-expense-modal', handleOpenModal);
+  }, []);
+
+  const handleCloseModal = (refresh) => {
+    setShowModal(false);
+    if (refresh) {
+      // Refresh the page or trigger a global data reload
+      window.location.reload(); 
+    }
+  };
   return (
     <div style={{
       minHeight: '100vh',
@@ -44,6 +61,10 @@ const Layout = () => {
           <Outlet />
         </div>
       </main>
+
+      {showModal && (
+        <ExpenseFormModal onClose={handleCloseModal} />
+      )}
 
       <Chatbot />
     </div>
