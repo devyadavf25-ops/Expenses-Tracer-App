@@ -54,7 +54,7 @@ const AiInsightsPage = () => {
             AI Insights <span style={{ fontSize: 22 }}>✨</span>
           </h1>
           <p style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>
-            Powered by GPT-4o-Mini
+            Powered by Advanced AI Assistant
           </p>
         </div>
         <button onClick={fetchInsights} disabled={loading} style={{

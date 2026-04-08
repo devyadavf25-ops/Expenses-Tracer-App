@@ -104,7 +104,7 @@ const chatWithExpenses = async (message, expenses, currency = 'NPR') => {
     const reply = await runAiTask({ systemPrompt, userPrompt: message, jsonMode: false });
     return { reply };
   } catch (error) {
-    return { reply: "I'm having trouble connecting to my AI brain. Please check your API keys." };
+    return { reply: "I'm ready to help, but I need an AI key! Please configure a GEMINI_API_KEY or OPENAI_API_KEY in your server settings." };
   }
 };
 
