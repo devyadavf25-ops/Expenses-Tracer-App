@@ -126,11 +126,26 @@ const Login = () => {
   const { login } = useAuth();
   const navigate = useNavigate();
 
-  // Check API Connection on load
+  // Check API Connection on load with retry for Render spin-up
   useEffect(() => {
-    API.get('/health')
-      .then(() => setApiStatus('online'))
-      .catch(() => setApiStatus('offline'));
+    let retries = 0;
+    const maxRetries = 3;
+    
+    const checkHealth = () => {
+      API.get('/health')
+        .then(() => setApiStatus('online'))
+        .catch(() => {
+          if (retries < maxRetries) {
+            retries++;
+            setApiStatus('waking');
+            setTimeout(checkHealth, 3000); // Retry every 3 seconds
+          } else {
+            setApiStatus('offline');
+          }
+        });
+    };
+    
+    checkHealth();
   }, []);
 
   // Lamp lights up when any field is focused
@@ -177,9 +192,19 @@ const Login = () => {
             <p style={styles.subtitle}>Sign in to your expense tracker</p>
             
             {/* Status Indicator */}
-            <div style={{ ...styles.statusBadge, color: apiStatus === 'online' ? '#00e87a' : apiStatus === 'offline' ? '#ff4d4d' : '#888' }}>
-              <span style={{ ...styles.statusDot, background: apiStatus === 'online' ? '#00e87a' : apiStatus === 'offline' ? '#ff4d4d' : '#888' }} />
-              API: {apiStatus === 'online' ? 'System Online' : apiStatus === 'offline' ? 'Server Offline/Timeout' : 'Verifying connection...'}
+            <div style={{ 
+              ...styles.statusBadge, 
+              color: apiStatus === 'online' ? '#00e87a' : apiStatus === 'waking' ? '#fbbf24' : apiStatus === 'offline' ? '#ff4d4d' : '#888',
+              borderColor: apiStatus === 'waking' ? 'rgba(251,191,36,0.3)' : styles.statusBadge.borderColor
+            }}>
+              <span style={{ 
+                ...styles.statusDot, 
+                background: apiStatus === 'online' ? '#00e87a' : apiStatus === 'waking' ? '#fbbf24' : apiStatus === 'offline' ? '#ff4d4d' : '#888',
+                boxShadow: apiStatus === 'waking' ? '0 0 10px #fbbf24' : styles.statusDot.boxShadow
+              }} className={apiStatus === 'waking' ? 'animate-pulse' : ''} />
+              {apiStatus === 'online' ? 'System Online' : 
+               apiStatus === 'waking' ? 'Waking up server...' : 
+               apiStatus === 'offline' ? 'Server Offline/Timeout' : 'Verifying connection...'}
             </div>
           </div>
 
