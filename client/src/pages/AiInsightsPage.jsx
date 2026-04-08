@@ -140,7 +140,7 @@ const AiInsightsPage = () => {
           {(!data?.insights || data.insights.length === 0) && (
              <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px 0', border: '1px solid var(--border)', borderRadius: 20, background: 'var(--bg-card)' }}>
                 <p style={{ fontSize: 32, margin: '0 0 10px' }}>🤖</p>
-                <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>No insights found yet. Add more expenses to give your AI something to analyze.</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>AI Assistant is waiting for more data. Add more expenses to get personalized financial insights.</p>
              </div>
           )}
         </div>
