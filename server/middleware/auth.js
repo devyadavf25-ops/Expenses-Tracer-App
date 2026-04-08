@@ -19,7 +19,8 @@ const protect = async (req, res, next) => {
   }
 
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const secret = process.env.JWT_SECRET || 'expense_tracker_default_secret_321';
+    const decoded = jwt.verify(token, secret);
     req.user = await User.findByPk(decoded.id);
 
     if (!req.user) {
