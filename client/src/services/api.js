@@ -1,8 +1,9 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || '/api',
+  baseURL: '/api', // Force use of Netlify proxy/bridge
   headers: { 'Content-Type': 'application/json' },
+  timeout: 15000, // Give Render 15 seconds to respond
 });
 
 // Attach JWT token to every request
