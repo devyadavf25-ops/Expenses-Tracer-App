@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
 import { toInputDate } from '../utils/dateUtils';
+import InstallButton from '../components/common/InstallButton';
 
 const UserIcon = () => (
   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#00e87a" strokeWidth="2" strokeLinecap="round">
@@ -176,6 +177,22 @@ const Settings = () => {
             <SaveBtn loading={savingGoal} text="Save Goal" loadingText="Saving..." color="#a78bfa" />
           </div>
         </form>
+      </Section>
+
+      {/* App Installation */}
+      <Section 
+        icon={<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#f472b6" strokeWidth="2" strokeLinecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>} 
+        title="App Settings" 
+        subtitle="Manage your application"
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
+          <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5 }}>
+            Download Expenses Tracer to your device for faster access and a better experience. Once installed, it will appear on your home screen.
+          </p>
+          <div style={{ maxWidth: 320 }}>
+            <InstallButton />
+          </div>
+        </div>
       </Section>
     </div>
   );

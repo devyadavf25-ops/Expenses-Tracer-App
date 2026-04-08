@@ -15,13 +15,24 @@ export default defineConfig({
         name: 'ExpenseAI — Smart Expense Tracker',
         short_name: 'SmartSpend',
         description: 'Track, analyze, and optimize your spending with AI-powered insights.',
-        theme_color: '#030d1a',
-        background_color: '#030d1a',
+        start_url: '/',
         display: 'standalone',
-        orientation: 'portrait',
+        background_color: '#030d1a',
+        theme_color: '#00e87a',
+        categories: ['finance', 'productivity'],
         icons: [
-          { src: '/favicon.svg', sizes: '192x192', type: 'image/svg+xml' },
-          { src: '/favicon.svg', sizes: '512x512', type: 'image/svg+xml' }
+          {
+            src: 'favicon.svg',
+            sizes: '192x192',
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
+          },
+          {
+            src: 'favicon.svg',
+            sizes: '512x512',
+            type: 'image/svg+xml',
+            purpose: 'any maskable'
+          }
         ]
       }
     })
