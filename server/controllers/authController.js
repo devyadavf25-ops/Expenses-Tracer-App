@@ -3,7 +3,7 @@ const User = require('../models/User');
 
 // Generate JWT Token
 const generateToken = (id) => {
-  const secret = process.env.JWT_SECRET || 'expense_tracker_default_secret_321';
+  const secret = process.env.JWT_SECRET || 'dev_secret_key_12345'; // Fallback for stability
   return jwt.sign({ id }, secret, {
     expiresIn: process.env.JWT_EXPIRE || '30d',
   });

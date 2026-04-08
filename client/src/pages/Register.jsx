@@ -129,25 +129,11 @@ const Register = () => {
   const { register } = useAuth();
   const navigate = useNavigate();
 
-  // Check API Connection on load with retry for Render spin-up
+  // Check API Connection on load
   useEffect(() => {
-    let retries = 0;
-    const maxRetries = 3;
-    
-    const checkHealth = () => {
-      API.get('/health')
-        .then(() => setApiStatus('online'))
-        .catch(() => {
-          if (retries < maxRetries) {
-            retries++;
-            setApiStatus('waking');
-            setTimeout(checkHealth, 3000); 
-          } else {
-            setApiStatus('offline');
-          }
-        });
-    };
-    checkHealth();
+    API.get('/health')
+      .then(() => setApiStatus('online'))
+      .catch(() => setApiStatus('offline'));
   }, []);
 
   useEffect(() => {
@@ -190,19 +176,9 @@ const Register = () => {
             <p style={styles.subtitle}>Join SmartSpend — track smarter</p>
             
             {/* Status Indicator */}
-            <div style={{ 
-              ...styles.statusBadge, 
-              color: apiStatus === 'online' ? '#00e87a' : apiStatus === 'waking' ? '#fbbf24' : apiStatus === 'offline' ? '#ff4d4d' : '#888',
-              borderColor: apiStatus === 'waking' ? 'rgba(251,191,36,0.3)' : styles.statusBadge.borderColor
-            }}>
-              <span style={{ 
-                ...styles.statusDot, 
-                background: apiStatus === 'online' ? '#00e87a' : apiStatus === 'waking' ? '#fbbf24' : apiStatus === 'offline' ? '#ff4d4d' : '#888',
-                boxShadow: apiStatus === 'waking' ? '0 0 10px #fbbf24' : styles.statusDot.boxShadow
-              }} className={apiStatus === 'waking' ? 'animate-pulse' : ''} />
-              {apiStatus === 'online' ? 'System Online' : 
-               apiStatus === 'waking' ? 'Waking up server...' : 
-               apiStatus === 'offline' ? 'Server Offline/Timeout' : 'Verifying connection...'}
+            <div style={{ ...styles.statusBadge, color: apiStatus === 'online' ? '#00e87a' : apiStatus === 'offline' ? '#ff4d4d' : '#888' }}>
+              <span style={{ ...styles.statusDot, background: apiStatus === 'online' ? '#00e87a' : apiStatus === 'offline' ? '#ff4d4d' : '#888' }} />
+              API: {apiStatus === 'online' ? 'System Online' : apiStatus === 'offline' ? 'Server Offline/Timeout' : 'Verifying connection...'}
             </div>
           </div>
 
@@ -340,7 +316,7 @@ const styles = {
   card: {
     background: 'var(--bg-card)',
     border: '1.5px solid var(--border)',
-    borderRadius: 24, padding: '32px 24px', width: '92%', maxWidth: 400,
+    borderRadius: 24, padding: '36px 36px', width: '100%', maxWidth: 400,
     boxShadow: '0 0 40px rgba(0,0,0,0.2), 0 20px 60px rgba(0,0,0,0.5)',
     transition: 'all 0.4s ease',
   },
