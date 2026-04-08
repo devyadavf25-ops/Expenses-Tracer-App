@@ -17,13 +17,9 @@ const getOpenAI = () => {
   return new OpenAI({ apiKey: key });
 };
 
-// --- Core Wrapper Logic ---
-
-/**
- * Common entry point for AI tasks.
- * Tries Gemini first (Free), then OpenAI if configured.
- */
 const runAiTask = async ({ systemPrompt, userPrompt, jsonMode = false }) => {
+  const errors = [];
+
   // 1. Try Gemini first
   const gemini = getGemini();
   if (gemini) {
@@ -36,8 +32,11 @@ const runAiTask = async ({ systemPrompt, userPrompt, jsonMode = false }) => {
       const cleanedText = text.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
       return jsonMode ? JSON.parse(cleanedText) : cleanedText;
     } catch (err) {
-      console.warn("Gemini failed, trying OpenAI...", err.message);
+      console.warn("Gemini execution failed:", err.message);
+      errors.push(`Gemini Error: ${err.message}`);
     }
+  } else {
+    errors.push("Gemini: GEMINI_API_KEY is not set.");
   }
 
   // 2. Try OpenAI fallback
@@ -53,11 +52,14 @@ const runAiTask = async ({ systemPrompt, userPrompt, jsonMode = false }) => {
       const content = completion.choices[0].message.content;
       return jsonMode ? JSON.parse(content) : content;
     } catch (err) {
-      console.error("OpenAI Fallback Error:", err.message);
+      console.error("OpenAI execution failed:", err.message);
+      errors.push(`OpenAI Error: ${err.message}`);
     }
+  } else {
+    errors.push("OpenAI: OPENAI_API_KEY is not set.");
   }
 
-  throw new Error("No AI provider (Gemini or OpenAI) is configured or available.");
+  throw new Error(`AI providers failed or missing. [${errors.join(" | ")}]`);
 };
 
 // --- Public Services ---
