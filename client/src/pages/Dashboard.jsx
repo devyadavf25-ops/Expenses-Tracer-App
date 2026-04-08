@@ -53,10 +53,10 @@ const Dashboard = () => {
       {/* ── Header ── */}
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
         <div>
-          <h1 style={{ fontSize: 30, fontWeight: 900, color: '#d0f0e0', margin: '0 0 4px', letterSpacing: '-0.5px' }}>
-            Hello, <span style={{ color: '#00e87a' }}>{user?.name?.split(' ')[0]}</span> 👋
+          <h1 style={{ fontSize: 30, fontWeight: 900, color: 'var(--text-primary)', margin: '0 0 4px', letterSpacing: '-0.5px' }}>
+            Hello, <span style={{ color: 'var(--accent)' }}>{user?.name?.split(' ')[0]}</span> 👋
           </h1>
-          <p style={{ fontSize: 11, color: '#3a6a5a', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em', margin: 0 }}>
+          <p style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.12em', margin: 0 }}>
             {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
           </p>
         </div>
@@ -68,11 +68,11 @@ const Dashboard = () => {
             background: 'linear-gradient(135deg, #00c866, #00a855)',
             border: 'none', color: '#fff',
             fontSize: 13, fontWeight: 700, cursor: 'pointer',
-            boxShadow: '0 4px 20px rgba(0,232,122,0.3)',
+            boxShadow: '0 4px 20px var(--accent-glow)',
             transition: 'all 0.2s',
           }}
-          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 28px rgba(0,232,122,0.45)'; }}
-          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,232,122,0.3)'; }}
+          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 28px var(--accent-glow)'; }}
+          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px var(--accent-glow)'; }}
         >
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
             <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
@@ -93,31 +93,31 @@ const Dashboard = () => {
       {/* ── Budget Bar (if set) ── */}
       {user?.monthlyBudget > 0 && (
         <div style={{
-          background: 'linear-gradient(160deg, #0a1e30 0%, #071525 100%)',
-          border: `1px solid ${budgetOver ? 'rgba(248,113,113,0.25)' : 'rgba(0,232,122,0.12)'}`,
+          background: 'var(--bg-card)',
+          border: `1px solid ${budgetOver ? 'rgba(248,113,113,0.25)' : 'var(--border)'}`,
           borderRadius: 18, padding: '20px 24px',
         }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: 12 }}>
             <div>
-              <p style={{ fontSize: 11, fontWeight: 700, color: '#3a6a5a', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 4px' }}>Monthly Budget</p>
-              <p style={{ fontSize: 22, fontWeight: 800, color: budgetOver ? '#f87171' : '#d0f0e0', margin: 0 }}>
+              <p style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em', margin: '0 0 4px' }}>Monthly Budget</p>
+              <p style={{ fontSize: 22, fontWeight: 800, color: budgetOver ? '#f87171' : 'var(--text-primary)', margin: 0 }}>
                 {formatCurrency(stats?.thisMonth || 0)}
-                <span style={{ fontSize: 13, fontWeight: 500, color: '#3a6a5a', marginLeft: 8 }}>
+                <span style={{ fontSize: 13, fontWeight: 500, color: 'var(--text-muted)', marginLeft: 8 }}>
                   of {formatCurrency(user.monthlyBudget)}
                 </span>
               </p>
             </div>
             <div style={{
               padding: '6px 14px', borderRadius: 20,
-              background: budgetOver ? 'rgba(248,113,113,0.1)' : 'rgba(0,232,122,0.08)',
-              color: budgetOver ? '#f87171' : '#00e87a',
+              background: budgetOver ? 'rgba(248,113,113,0.1)' : 'var(--accent-dim)',
+              color: budgetOver ? '#f87171' : 'var(--accent)',
               fontSize: 12, fontWeight: 700,
-              border: `1px solid ${budgetOver ? 'rgba(248,113,113,0.2)' : 'rgba(0,232,122,0.2)'}`,
+              border: `1px solid ${budgetOver ? 'rgba(248,113,113,0.2)' : 'var(--border-hover)'}`,
             }}>
               {budgetPct.toFixed(0)}% {budgetOver ? '⚠️ Over limit' : 'used'}
             </div>
           </div>
-          <div style={{ height: 8, background: 'rgba(255,255,255,0.06)', borderRadius: 10, overflow: 'hidden' }}>
+          <div style={{ height: 8, background: 'var(--bg-card-hover)', borderRadius: 10, overflow: 'hidden' }}>
             <div style={{
               height: '100%', borderRadius: 10,
               width: `${budgetPct}%`,
@@ -125,7 +125,7 @@ const Dashboard = () => {
                 ? 'linear-gradient(90deg, #ef4444, #f87171)'
                 : 'linear-gradient(90deg, #00c866, #00e87a)',
               transition: 'width 1s ease',
-              boxShadow: budgetOver ? '0 0 12px rgba(239,68,68,0.4)' : '0 0 12px rgba(0,232,122,0.3)',
+              boxShadow: budgetOver ? '0 0 12px rgba(239,68,68,0.4)' : '0 0 12px var(--accent-glow)',
             }} />
           </div>
         </div>

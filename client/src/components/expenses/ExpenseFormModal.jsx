@@ -11,19 +11,19 @@ const CATEGORIES = [
 ];
 
 const inp = {
-  background: 'rgba(0,232,122,0.04)',
-  border: '1.5px solid rgba(0,232,122,0.12)',
+  background: 'var(--bg-card-hover)',
+  border: '1.5px solid var(--border)',
   borderRadius: 12, height: 48,
-  padding: '0 14px', color: '#d0f0e0',
+  padding: '0 14px', color: 'var(--text-primary)',
   fontSize: 14, fontWeight: 500,
   outline: 'none', width: '100%',
-  caretColor: '#00e87a', transition: 'all 0.2s',
+  caretColor: 'var(--accent)', transition: 'all 0.2s',
 };
-const focusStyle = (e) => { e.target.style.borderColor = '#00e87a'; e.target.style.boxShadow = '0 0 0 3px rgba(0,232,122,0.1)'; };
-const blurStyle = (e) => { e.target.style.borderColor = 'rgba(0,232,122,0.12)'; e.target.style.boxShadow = 'none'; };
+const focusStyle = (e) => { e.target.style.borderColor = 'var(--accent)'; e.target.style.boxShadow = '0 0 0 3px var(--accent-glow)'; };
+const blurStyle = (e) => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none'; };
 
 const Label = ({ children }) => (
-  <label style={{ fontSize: 11, fontWeight: 700, color: '#3a6a5a', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+  <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>
     {children}
   </label>
 );
@@ -78,41 +78,41 @@ const ExpenseFormModal = ({ expense, onClose }) => {
   return (
     <div style={{
       position: 'fixed', inset: 0,
-      background: 'rgba(2,8,18,0.75)', backdropFilter: 'blur(8px)',
+      background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(8px)',
       zIndex: 100, display: 'flex', alignItems: 'center', justifyContent: 'center',
       padding: 16,
     }}>
       <div style={{
-        background: 'linear-gradient(160deg, #0a1e30 0%, #071525 100%)',
-        border: '1px solid rgba(0,232,122,0.2)',
+        background: 'var(--bg-card)',
+        border: '1px solid var(--border)',
         borderRadius: 22, width: '100%', maxWidth: 500,
         maxHeight: '90vh', overflowY: 'auto',
-        boxShadow: '0 24px 80px rgba(0,0,0,0.7), 0 0 60px rgba(0,232,122,0.06)',
+        boxShadow: '0 24px 80px rgba(0,0,0,0.4), 0 0 60px var(--accent-glow)',
       }}>
         {/* Header */}
         <div style={{
           display: 'flex', alignItems: 'center', justifyContent: 'space-between',
           padding: '22px 24px 18px',
-          borderBottom: '1px solid rgba(0,232,122,0.08)',
+          borderBottom: '1px solid var(--border)',
         }}>
           <div>
-            <h2 style={{ fontSize: 20, fontWeight: 800, color: '#d0f0e0', margin: '0 0 3px' }}>
+            <h2 style={{ fontSize: 20, fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 3px' }}>
               {isEditing ? 'Edit Transaction' : 'New Transaction'}
             </h2>
-            <p style={{ fontSize: 11, color: '#3a6a5a', margin: 0, fontWeight: 600 }}>
+            <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: 0, fontWeight: 600 }}>
               {isEditing ? 'Modify existing record' : 'Track a new expense'}
             </p>
           </div>
           <button onClick={() => onClose(false)} style={{
             width: 36, height: 36, borderRadius: 10,
-            background: 'rgba(255,255,255,0.04)',
-            border: '1px solid rgba(255,255,255,0.08)',
-            color: '#5a8a7a', cursor: 'pointer',
+            background: 'var(--bg-card-hover)',
+            border: '1px solid var(--border)',
+            color: 'var(--text-muted)', cursor: 'pointer',
             display: 'flex', alignItems: 'center', justifyContent: 'center',
             transition: 'all 0.2s',
           }}
             onMouseEnter={e => { e.currentTarget.style.background = 'rgba(248,113,113,0.1)'; e.currentTarget.style.color = '#f87171'; }}
-            onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#5a8a7a'; }}
+            onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-card-hover)'; e.currentTarget.style.color = 'var(--text-muted)'; }}
           >
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
               <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
@@ -142,7 +142,7 @@ const ExpenseFormModal = ({ expense, onClose }) => {
             <Field>
               <Label>Date</Label>
               <input type="date" value={date} onChange={e => setDate(e.target.value)}
-                style={{ ...inp, colorScheme: 'dark', cursor: 'pointer' }}
+                style={{ ...inp, cursor: 'pointer' }}
                 onFocus={focusStyle} onBlur={blurStyle} />
             </Field>
           </div>
@@ -154,9 +154,9 @@ const ExpenseFormModal = ({ expense, onClose }) => {
               <button type="button" onClick={handleAiCategorize} disabled={aiLoading} style={{
                 display: 'flex', alignItems: 'center', gap: 6,
                 padding: '5px 12px', borderRadius: 20,
-                background: 'rgba(0,232,122,0.08)',
-                border: '1px solid rgba(0,232,122,0.2)',
-                color: '#00e87a', fontSize: 11, fontWeight: 700,
+                background: 'var(--accent-dim)',
+                border: '1px solid var(--border)',
+                color: 'var(--accent)', fontSize: 11, fontWeight: 700,
                 cursor: aiLoading ? 'not-allowed' : 'pointer',
                 opacity: aiLoading ? 0.6 : 1, transition: 'all 0.2s',
               }}>
@@ -170,14 +170,14 @@ const ExpenseFormModal = ({ expense, onClose }) => {
               <select value={category} onChange={e => { setCategory(e.target.value); setIsAiCategorized(false); }}
                 style={{ ...inp, paddingRight: 36, cursor: 'pointer', appearance: 'none' }}
                 onFocus={focusStyle} onBlur={blurStyle}>
-                {CATEGORIES.map(c => <option key={c} value={c} style={{ background: '#0a1e30' }}>{c}</option>)}
+                {CATEGORIES.map(c => <option key={c} value={c} style={{ background: 'var(--bg-card)', color: 'var(--text-primary)' }}>{c}</option>)}
               </select>
-              <span style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', color: '#3a6a5a', pointerEvents: 'none' }}>
+              <span style={{ position: 'absolute', right: 14, top: '50%', transform: 'translateY(-50%)', color: 'var(--text-muted)', pointerEvents: 'none' }}>
                 <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"/></svg>
               </span>
             </div>
             {isAiCategorized && (
-              <p style={{ fontSize: 11, color: '#00e87a', margin: '2px 0 0', display: 'flex', alignItems: 'center', gap: 5 }}>
+              <p style={{ fontSize: 11, color: 'var(--accent)', margin: '2px 0 0', display: 'flex', alignItems: 'center', gap: 5 }}>
                 ✨ AI categorized
               </p>
             )}
@@ -200,13 +200,13 @@ const ExpenseFormModal = ({ expense, onClose }) => {
           <div style={{ display: 'flex', gap: 10, marginTop: 4 }}>
             <button type="button" onClick={() => onClose(false)} style={{
               flex: 1, height: 48, borderRadius: 12,
-              background: 'rgba(255,255,255,0.04)',
-              border: '1px solid rgba(255,255,255,0.08)',
-              color: '#5a8a7a', fontSize: 13, fontWeight: 700,
+              background: 'var(--bg-card-hover)',
+              border: '1px solid var(--border)',
+              color: 'var(--text-secondary)', fontSize: 13, fontWeight: 700,
               cursor: 'pointer', transition: 'all 0.2s',
             }}
-              onMouseEnter={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.08)'; e.currentTarget.style.color = '#d0f0e0'; }}
-              onMouseLeave={e => { e.currentTarget.style.background = 'rgba(255,255,255,0.04)'; e.currentTarget.style.color = '#5a8a7a'; }}
+              onMouseEnter={e => { e.currentTarget.style.background = 'var(--border)'; e.currentTarget.style.color = 'var(--text-primary)'; }}
+              onMouseLeave={e => { e.currentTarget.style.background = 'var(--bg-card-hover)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
             >Cancel</button>
             <button type="submit" disabled={loading} style={{
               flex: 2, height: 48, borderRadius: 12,
@@ -215,7 +215,7 @@ const ExpenseFormModal = ({ expense, onClose }) => {
               fontSize: 13, fontWeight: 700,
               cursor: loading ? 'not-allowed' : 'pointer',
               opacity: loading ? 0.75 : 1,
-              boxShadow: '0 4px 20px rgba(0,232,122,0.3)',
+              boxShadow: '0 4px 20px var(--accent-glow)',
               transition: 'all 0.2s',
             }}>
               {loading ? 'Saving...' : isEditing ? 'Save Changes' : 'Add Transaction'}

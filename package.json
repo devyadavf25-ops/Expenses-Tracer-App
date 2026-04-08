@@ -5,7 +5,7 @@
   "scripts": {
     "postinstall": "cd server && npm install && npm rebuild sqlite3 --build-from-source",
     "start": "cd server && node server.js",
-    "build": "cd server && npm install",
+    "build": "cd server && npm install && npm rebuild sqlite3",
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "server": "cd server && npm run dev",
     "client": "cd client && npm run dev",

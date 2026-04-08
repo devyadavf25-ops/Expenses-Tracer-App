@@ -20,21 +20,21 @@ const GoalIcon = () => (
 
 const Section = ({ icon, title, subtitle, children }) => (
   <div style={{
-    background: 'linear-gradient(160deg, #0a1e30 0%, #071525 100%)',
-    border: '1px solid rgba(0,232,122,0.12)',
+    background: 'var(--bg-card)',
+    border: '1px solid var(--border)',
     borderRadius: 20, padding: '28px 28px',
   }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: 14, marginBottom: 24 }}>
       <div style={{
         width: 48, height: 48, borderRadius: 14,
-        background: 'rgba(0,232,122,0.07)',
-        border: '1px solid rgba(0,232,122,0.18)',
+        background: 'var(--accent-dim)',
+        border: '1px solid var(--border-hover)',
         display: 'flex', alignItems: 'center', justifyContent: 'center',
         flexShrink: 0,
       }}>{icon}</div>
       <div>
-        <h2 style={{ fontSize: 16, fontWeight: 800, color: '#d0f0e0', margin: '0 0 3px' }}>{title}</h2>
-        <p style={{ fontSize: 11, color: '#3a6a5a', margin: 0, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{subtitle}</p>
+        <h2 style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 3px' }}>{title}</h2>
+        <p style={{ fontSize: 11, color: 'var(--text-muted)', margin: 0, fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.08em' }}>{subtitle}</p>
       </div>
     </div>
     {children}
@@ -43,19 +43,19 @@ const Section = ({ icon, title, subtitle, children }) => (
 
 const FieldRow = ({ label, children }) => (
   <div style={{ display: 'flex', flexDirection: 'column', gap: 7 }}>
-    <label style={{ fontSize: 11, fontWeight: 700, color: '#3a6a5a', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{label}</label>
+    <label style={{ fontSize: 11, fontWeight: 700, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.1em' }}>{label}</label>
     {children}
   </div>
 );
 
 const inputStyle = {
-  background: 'rgba(0,232,122,0.04)',
-  border: '1.5px solid rgba(0,232,122,0.12)',
+  background: 'var(--bg-card-hover)',
+  border: '1.5px solid var(--border)',
   borderRadius: 12, padding: '0 16px',
-  height: 48, color: '#d0f0e0',
+  height: 48, color: 'var(--text-primary)',
   fontSize: 14, fontWeight: 500,
   outline: 'none', width: '100%',
-  caretColor: '#00e87a',
+  caretColor: 'var(--accent)',
   transition: 'all 0.2s',
 };
 
@@ -99,8 +99,8 @@ const Settings = () => {
     <div className="animate-fade-in" style={{ maxWidth: 720, display: 'flex', flexDirection: 'column', gap: 20 }}>
       {/* Header */}
       <div>
-        <h1 style={{ fontSize: 28, fontWeight: 900, color: '#d0f0e0', margin: '0 0 4px', letterSpacing: '-0.5px' }}>Settings</h1>
-        <p style={{ fontSize: 11, color: '#3a6a5a', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>
+        <h1 style={{ fontSize: 28, fontWeight: 900, color: 'var(--text-primary)', margin: '0 0 4px', letterSpacing: '-0.5px' }}>Settings</h1>
+        <p style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>
           Profile & Financial Preferences
         </p>
       </div>
@@ -120,7 +120,7 @@ const Settings = () => {
             </div>
           </FieldRow>
         </div>
-        <p style={{ fontSize: 11, color: '#2a5a4a', marginTop: 12 }}>
+        <p style={{ fontSize: 11, color: 'var(--accent)', marginTop: 12 }}>
           🔒 Profile info cannot be changed. Contact support to update email.
         </p>
       </Section>
@@ -135,14 +135,14 @@ const Settings = () => {
                 value={budget} onChange={e => setBudget(e.target.value)}
                 placeholder="e.g. 50000" required
                 style={{ ...inputStyle, width: 260 }}
-                onFocus={e => { e.target.style.borderColor = '#38bdf8'; e.target.style.boxShadow = '0 0 0 3px rgba(56,189,248,0.1)'; }}
-                onBlur={e => { e.target.style.borderColor = 'rgba(0,232,122,0.12)'; e.target.style.boxShadow = 'none'; }}
+                onFocus={e => { e.target.style.borderColor = 'var(--accent)'; e.target.style.boxShadow = '0 0 0 3px var(--accent-glow)'; }}
+                onBlur={e => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none'; }}
               />
             </FieldRow>
             <SaveBtn loading={savingBudget} text="Set Budget" loadingText="Saving..." color="#38bdf8" />
           </div>
           {user?.monthlyBudget > 0 && (
-            <p style={{ fontSize: 12, color: '#3a6a5a', marginTop: 10 }}>
+            <p style={{ fontSize: 12, color: 'var(--text-muted)', marginTop: 10 }}>
               Current budget: <strong style={{ color: '#38bdf8' }}>{user.currency} {user.monthlyBudget.toLocaleString()}</strong> / month
             </p>
           )}
@@ -159,16 +159,16 @@ const Settings = () => {
                 value={goalAmount} onChange={e => setGoalAmount(e.target.value)}
                 placeholder="e.g. 100000" required
                 style={inputStyle}
-                onFocus={e => { e.target.style.borderColor = '#a78bfa'; e.target.style.boxShadow = '0 0 0 3px rgba(167,139,250,0.1)'; }}
-                onBlur={e => { e.target.style.borderColor = 'rgba(0,232,122,0.12)'; e.target.style.boxShadow = 'none'; }}
+                onFocus={e => { e.target.style.borderColor = 'var(--accent)'; e.target.style.boxShadow = '0 0 0 3px var(--accent-glow)'; }}
+                onBlur={e => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none'; }}
               />
             </FieldRow>
             <FieldRow label="Target Date">
               <input
                 type="date" value={goalDate} onChange={e => setGoalDate(e.target.value)} required
-                style={{ ...inputStyle, colorScheme: 'dark' }}
-                onFocus={e => { e.target.style.borderColor = '#a78bfa'; e.target.style.boxShadow = '0 0 0 3px rgba(167,139,250,0.1)'; }}
-                onBlur={e => { e.target.style.borderColor = 'rgba(0,232,122,0.12)'; e.target.style.boxShadow = 'none'; }}
+                style={{ ...inputStyle }}
+                onFocus={e => { e.target.style.borderColor = 'var(--accent)'; e.target.style.boxShadow = '0 0 0 3px var(--accent-glow)'; }}
+                onBlur={e => { e.target.style.borderColor = 'var(--border)'; e.target.style.boxShadow = 'none'; }}
               />
             </FieldRow>
           </div>

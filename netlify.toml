@@ -3,6 +3,14 @@
   command = "npm run build"
   publish = "dist/"
 
+# Proxy API requests to backend (once deployed)
+[[redirects]]
+  from = "/api/*"
+  to = "https://expenses-tracer-app.onrender.com/api/:splat"
+  status = 200
+  force = true
+
+# Main SPA redirect (fallback to index.html)
 [[redirects]]
   from = "/*"
   to = "/index.html"

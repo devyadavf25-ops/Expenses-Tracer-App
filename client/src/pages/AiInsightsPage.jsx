@@ -50,10 +50,10 @@ const AiInsightsPage = () => {
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', flexWrap: 'wrap', gap: 16 }}>
         <div>
-          <h1 style={{ fontSize: 28, fontWeight: 900, color: '#d0f0e0', margin: '0 0 4px', letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: 10 }}>
+          <h1 style={{ fontSize: 28, fontWeight: 900, color: 'var(--text-primary)', margin: '0 0 4px', letterSpacing: '-0.5px', display: 'flex', alignItems: 'center', gap: 10 }}>
             AI Insights <span style={{ fontSize: 22 }}>✨</span>
           </h1>
-          <p style={{ fontSize: 11, color: '#3a6a5a', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>
+          <p style={{ fontSize: 11, color: 'var(--text-muted)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>
             Powered by GPT-4o-Mini
           </p>
         </div>
@@ -64,7 +64,7 @@ const AiInsightsPage = () => {
           border: 'none', color: '#fff', fontSize: 13, fontWeight: 700,
           cursor: loading ? 'not-allowed' : 'pointer',
           opacity: loading ? 0.7 : 1, transition: 'all 0.2s',
-          boxShadow: '0 4px 20px rgba(0,232,122,0.3)',
+          boxShadow: '0 4px 20px var(--accent-glow)',
         }}
           onMouseEnter={e => { if(!loading) e.currentTarget.style.transform = 'translateY(-2px)'; }}
           onMouseLeave={e => { if(!loading) e.currentTarget.style.transform = 'translateY(0)'; }}
@@ -78,12 +78,13 @@ const AiInsightsPage = () => {
 
       {loading ? (
         <div style={{
-          background: 'linear-gradient(160deg, #0a1e30 0%, #071525 100%)',
-          border: '1px solid rgba(0,232,122,0.12)',
+          background: 'var(--bg-card)',
+          border: '1px solid var(--border)',
           borderRadius: 24, padding: '80px 20px', textAlign: 'center',
+          boxShadow: '0 4px 24px rgba(0,0,0,0.1)',
         }}>
           <div className="page-spinner" style={{ margin: '0 auto 24px' }} />
-          <p style={{ color: '#3a6a5a', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }} className="animate-pulse">
+          <p style={{ color: 'var(--text-muted)', fontSize: 11, fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em' }} className="animate-pulse">
             AI is analyzing your spending patterns...
           </p>
         </div>
@@ -94,8 +95,8 @@ const AiInsightsPage = () => {
             const Icon = config.icon;
             return (
               <div key={i} className="animate-slide-in" style={{
-                background: 'linear-gradient(160deg, #0a1e30 0%, #071525 100%)',
-                border: '1px solid rgba(0,232,122,0.12)',
+                background: 'var(--bg-card)',
+                border: '1px solid var(--border)',
                 borderRadius: 20, padding: 24,
                 animationDelay: `${i * 100}ms`,
                 transition: 'all 0.3s',
@@ -107,7 +108,7 @@ const AiInsightsPage = () => {
                 }}
                 onMouseLeave={e => {
                   e.currentTarget.style.transform = 'translateY(0)';
-                  e.currentTarget.style.borderColor = 'rgba(0,232,122,0.12)';
+                  e.currentTarget.style.borderColor = 'var(--border)';
                   e.currentTarget.style.boxShadow = 'none';
                 }}
               >
@@ -121,8 +122,8 @@ const AiInsightsPage = () => {
                     <Icon />
                   </div>
                   <div>
-                    <h3 style={{ fontSize: 16, fontWeight: 800, color: '#d0f0e0', margin: '0 0 6px', lineHeight: 1.3 }}>{ins.title}</h3>
-                    <p style={{ fontSize: 13, color: '#5a8a7a', margin: 0, lineHeight: 1.5, fontWeight: 500 }}>{ins.description}</p>
+                    <h3 style={{ fontSize: 16, fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 6px', lineHeight: 1.3 }}>{ins.title}</h3>
+                    <p style={{ fontSize: 13, color: 'var(--text-secondary)', margin: 0, lineHeight: 1.5, fontWeight: 500 }}>{ins.description}</p>
                     <div style={{ marginTop: 14 }}>
                       <span style={{
                         padding: '4px 10px', borderRadius: 8,
@@ -137,9 +138,9 @@ const AiInsightsPage = () => {
             );
           })}
           {(!data?.insights || data.insights.length === 0) && (
-             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px 0', border: '1px solid rgba(0,232,122,0.12)', borderRadius: 20, background: '#0a1e30' }}>
+             <div style={{ gridColumn: '1 / -1', textAlign: 'center', padding: '60px 0', border: '1px solid var(--border)', borderRadius: 20, background: 'var(--bg-card)' }}>
                 <p style={{ fontSize: 32, margin: '0 0 10px' }}>🤖</p>
-                <p style={{ color: '#3a6a5a', fontSize: 13 }}>No insights found yet. Add more expenses to give your AI something to analyze.</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: 13 }}>No insights found yet. Add more expenses to give your AI something to analyze.</p>
              </div>
           )}
         </div>

@@ -111,6 +111,8 @@ const PasswordStrength = ({ password }) => {
 };
 
 
+import API from '../services/api';
+
 /* ── Main Component ─────────────────────────────────────────────────── */
 const Register = () => {
   const [name, setName] = useState('');
@@ -122,8 +124,17 @@ const Register = () => {
   const [emailFocus, setEmailFocus] = useState(false);
   const [passFocus, setPassFocus] = useState(false);
   const [lampLit, setLampLit] = useState(false);
+  const [apiStatus, setApiStatus] = useState('checking'); // 'checking', 'online', 'offline'
+  
   const { register } = useAuth();
   const navigate = useNavigate();
+
+  // Check API Connection on load
+  useEffect(() => {
+    API.get('/health')
+      .then(() => setApiStatus('online'))
+      .catch(() => setApiStatus('offline'));
+  }, []);
 
   useEffect(() => {
     setLampLit(nameFocus || emailFocus || passFocus);
@@ -143,7 +154,8 @@ const Register = () => {
 
       <div style={styles.container}>
         {/* LEFT — Lamp */}
-        <div style={styles.leftPane}>
+        <div className="lg-visible" style={styles.leftPane}>
+          <style>{`.lg-visible { display: flex; } @media (max-width: 860px) { .lg-visible { display: none !important; } }`}</style>
           <div style={{ ...styles.lampWrap, filter: lampLit ? 'brightness(1.15)' : 'brightness(0.85)' }}>
             <LampCharacter isLit={lampLit} />
           </div>
@@ -156,13 +168,20 @@ const Register = () => {
         <div style={{ ...styles.card, boxShadow: lampLit ? styles.cardGlowActive.boxShadow : styles.card.boxShadow }}>
           <div style={styles.cardHeader}>
             <div style={styles.logoRing}>
-              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="#00e87a" strokeWidth="2.5" strokeLinecap="round">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" strokeWidth="2.5" strokeLinecap="round">
                 <path d="M12 2L2 7l10 5 10-5-10-5z" /><path d="M2 17l10 5 10-5" /><path d="M2 12l10 5 10-5" />
               </svg>
             </div>
             <h1 style={styles.title}>Create Account</h1>
             <p style={styles.subtitle}>Join SmartSpend — track smarter</p>
+            
+            {/* Status Indicator */}
+            <div style={{ ...styles.statusBadge, color: apiStatus === 'online' ? '#00e87a' : apiStatus === 'offline' ? '#ff4d4d' : '#888' }}>
+              <span style={{ ...styles.statusDot, background: apiStatus === 'online' ? '#00e87a' : apiStatus === 'offline' ? '#ff4d4d' : '#888' }} />
+              API: {apiStatus === 'online' ? 'System Online' : apiStatus === 'offline' ? 'Server Offline/Timeout' : 'Verifying connection...'}
+            </div>
           </div>
+
 
           <form onSubmit={handleSubmit} style={styles.form}>
             {/* Full Name */}
@@ -263,15 +282,16 @@ const Register = () => {
 const styles = {
   root: {
     minHeight: '100vh', width: '100%',
-    background: 'linear-gradient(135deg, #030d1a 0%, #051224 50%, #071830 100%)',
+    background: 'var(--bg-gradient)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
     fontFamily: "'Segoe UI', system-ui, -apple-system, sans-serif",
     position: 'relative', overflow: 'hidden', padding: '24px 16px',
+    transition: 'background 0.5s ease',
   },
   bgGlow1: {
     position: 'absolute', top: '-20%', right: '-10%',
     width: 500, height: 500, borderRadius: '50%',
-    background: 'radial-gradient(circle, rgba(0,232,122,0.06) 0%, transparent 70%)',
+    background: 'radial-gradient(circle, var(--accent-glow) 0%, transparent 70%)',
     pointerEvents: 'none',
   },
   bgGlow2: {
@@ -290,48 +310,54 @@ const styles = {
   },
   lampWrap: { transition: 'filter 0.5s ease', width: 220 },
   lampHint: {
-    color: '#4a8a6a', fontSize: 12, textAlign: 'center',
+    color: 'var(--text-muted)', fontSize: 12, textAlign: 'center',
     fontStyle: 'italic', transition: 'color 0.4s', maxWidth: 180,
   },
   card: {
-    background: 'linear-gradient(160deg, #0a1e30 0%, #071525 100%)',
-    border: '1.5px solid rgba(0,232,122,0.25)',
+    background: 'var(--bg-card)',
+    border: '1.5px solid var(--border)',
     borderRadius: 24, padding: '36px 36px', width: '100%', maxWidth: 400,
-    boxShadow: '0 0 40px rgba(0,232,122,0.08), 0 20px 60px rgba(0,0,0,0.5)',
-    transition: 'box-shadow 0.4s ease',
+    boxShadow: '0 0 40px rgba(0,0,0,0.2), 0 20px 60px rgba(0,0,0,0.5)',
+    transition: 'all 0.4s ease',
   },
   cardGlowActive: {
-    boxShadow: '0 0 60px rgba(0,232,122,0.2), 0 0 120px rgba(0,232,122,0.08), 0 20px 60px rgba(0,0,0,0.5)',
+    boxShadow: '0 0 60px var(--accent-glow), 0 0 120px rgba(0,232,122,0.08), 0 20px 60px rgba(0,0,0,0.5)',
   },
   cardHeader: { textAlign: 'center', marginBottom: 28 },
   logoRing: {
     width: 56, height: 56, borderRadius: 16,
-    border: '1.5px solid rgba(0,232,122,0.4)',
-    background: 'rgba(0,232,122,0.07)',
+    border: '1.5px solid var(--border-hover)',
+    background: 'var(--accent-dim)',
     display: 'flex', alignItems: 'center', justifyContent: 'center',
-    margin: '0 auto 14px', boxShadow: '0 0 20px rgba(0,232,122,0.15)',
+    margin: '0 auto 14px', boxShadow: '0 0 20px var(--accent-glow)',
   },
-  title: { fontSize: 26, fontWeight: 800, color: '#e8f8f0', margin: '0 0 6px', letterSpacing: '-0.5px' },
-  subtitle: { fontSize: 13, color: '#4a7a6a', margin: 0 },
+  title: { fontSize: 26, fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 6px', letterSpacing: '-0.5px' },
+  subtitle: { fontSize: 13, color: 'var(--text-secondary)', margin: 0 },
+  statusBadge: {
+    display: 'inline-flex', alignItems: 'center', gap: 8, fontSize: 11, fontWeight: 600,
+    padding: '6px 12px', borderRadius: 50, background: 'rgba(0,0,0,0.1)', marginTop: 12,
+    border: '1px solid var(--border)',
+  },
+  statusDot: { width: 6, height: 6, borderRadius: '50%', boxShadow: '0 0 8px currentColor' },
   form: { display: 'flex', flexDirection: 'column', gap: 16 },
   fieldGroup: { display: 'flex', flexDirection: 'column', gap: 7 },
-  label: { fontSize: 12, fontWeight: 600, color: '#6a9a8a', textTransform: 'uppercase', letterSpacing: '0.08em' },
+  label: { fontSize: 12, fontWeight: 600, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.08em' },
   labelRow: { display: 'flex', justifyContent: 'space-between', alignItems: 'center' },
   inputWrap: {
     display: 'flex', alignItems: 'center',
-    background: 'rgba(0,232,122,0.04)',
-    border: '1.5px solid rgba(0,232,122,0.15)',
+    background: 'var(--bg-card-hover)',
+    border: '1.5px solid var(--border)',
     borderRadius: 12, padding: '0 14px', height: 50,
-    transition: 'border-color 0.25s, box-shadow 0.25s', gap: 10,
+    transition: 'all 0.25s ease', gap: 10,
   },
   inputIcon: { flexShrink: 0, display: 'flex', alignItems: 'center' },
   input: {
     flex: 1, background: 'transparent', border: 'none', outline: 'none',
-    color: '#d0f0e0', fontSize: 14, fontWeight: 500, caretColor: '#00e87a',
+    color: 'var(--text-primary)', fontSize: 14, fontWeight: 500, caretColor: 'var(--accent)',
   },
   eyeBtn: {
     background: 'none', border: 'none', cursor: 'pointer',
-    color: '#4a6a7a', display: 'flex', alignItems: 'center',
+    color: 'var(--text-muted)', display: 'flex', alignItems: 'center',
     padding: 4, borderRadius: 6, transition: 'color 0.2s',
   },
   submitBtn: {
@@ -348,8 +374,8 @@ const styles = {
     border: '2px solid rgba(255,255,255,0.3)', borderTop: '2px solid #fff',
     borderRadius: '50%', animation: 'spin 0.8s linear infinite', display: 'inline-block',
   },
-  footerText: { textAlign: 'center', marginTop: 20, fontSize: 13, color: '#4a7a6a' },
-  footerLink: { color: '#00e87a', textDecoration: 'none', fontWeight: 600 },
+  footerText: { textAlign: 'center', marginTop: 20, fontSize: 13, color: 'var(--text-secondary)' },
+  footerLink: { color: 'var(--accent)', textDecoration: 'none', fontWeight: 600 },
 };
 
 export default Register;
