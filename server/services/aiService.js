@@ -17,10 +17,64 @@ const getOpenAI = () => {
   return new OpenAI({ apiKey: key });
 };
 
+const getDeepSeek = () => {
+  const key = process.env.DEEPSEEK_API_KEY;
+  if (!key || key === 'your_deepseek_api_key_here') return null;
+  return new OpenAI({
+    baseURL: 'https://api.deepseek.com',
+    apiKey: key,
+  });
+};
+
+const getGroq = () => {
+  const key = process.env.GROQ_API_KEY;
+  if (!key || key === 'your_groq_api_key_here') return null;
+  return new OpenAI({
+    baseURL: 'https://api.groq.com/openai/v1',
+    apiKey: key,
+  });
+};
+
 const runAiTask = async ({ systemPrompt, userPrompt, jsonMode = false }) => {
   const errors = [];
 
-  // 1. Try Gemini first
+  // 1. Try DeepSeek first (Primary)
+  const deepseek = getDeepSeek();
+  if (deepseek) {
+    try {
+      const completion = await deepseek.chat.completions.create({
+        model: 'deepseek-chat',
+        messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
+        response_format: jsonMode ? { type: 'json_object' } : undefined,
+        temperature: 0.3,
+      });
+      const content = completion.choices[0].message.content;
+      return jsonMode ? JSON.parse(content) : content;
+    } catch (err) {
+      console.warn("DeepSeek execution failed:", err.message);
+      errors.push(`DeepSeek Error: ${err.message}`);
+    }
+  }
+
+  // 2. Try Groq (Reliable Free Tier)
+  const groq = getGroq();
+  if (groq) {
+    try {
+      const completion = await groq.chat.completions.create({
+        model: 'llama-3.3-70b-versatile',
+        messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userPrompt }],
+        response_format: jsonMode ? { type: 'json_object' } : undefined,
+        temperature: 0.3,
+      });
+      const content = completion.choices[0].message.content;
+      return jsonMode ? JSON.parse(content) : content;
+    } catch (err) {
+      console.warn("Groq execution failed:", err.message);
+      errors.push(`Groq Error: ${err.message}`);
+    }
+  }
+
+  // 3. Try Gemini fallback
   const gemini = getGemini();
   if (gemini) {
     try {
@@ -28,18 +82,15 @@ const runAiTask = async ({ systemPrompt, userPrompt, jsonMode = false }) => {
       const result = await gemini.generateContent(fullPrompt);
       const response = await result.response;
       const text = response.text();
-      
       const cleanedText = text.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
       return jsonMode ? JSON.parse(cleanedText) : cleanedText;
     } catch (err) {
       console.warn("Gemini execution failed:", err.message);
       errors.push(`Gemini Error: ${err.message}`);
     }
-  } else {
-    errors.push("Gemini: GEMINI_API_KEY is not set.");
   }
 
-  // 2. Try OpenAI fallback
+  // 4. Try OpenAI fallback
   const openai = getOpenAI();
   if (openai) {
     try {
@@ -52,11 +103,9 @@ const runAiTask = async ({ systemPrompt, userPrompt, jsonMode = false }) => {
       const content = completion.choices[0].message.content;
       return jsonMode ? JSON.parse(content) : content;
     } catch (err) {
-      console.error("OpenAI execution failed:", err.message);
+      console.warn("OpenAI execution failed:", err.message);
       errors.push(`OpenAI Error: ${err.message}`);
     }
-  } else {
-    errors.push("OpenAI: OPENAI_API_KEY is not set.");
   }
 
   throw new Error(`AI providers failed or missing. [${errors.join(" | ")}]`);
