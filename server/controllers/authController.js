@@ -40,6 +40,7 @@ const register = async (req, res, next) => {
           name: user.name,
           email: user.email,
           currency: user.currency,
+          role: user.role,
         },
         token,
       },
@@ -86,6 +87,7 @@ const login = async (req, res, next) => {
           name: user.name,
           email: user.email,
           currency: user.currency,
+          role: user.role,
         },
         token,
       },
@@ -110,6 +112,7 @@ const getMe = async (req, res, next) => {
         name: user.name,
         email: user.email,
         currency: user.currency,
+        role: user.role,
         createdAt: user.createdAt,
       },
     });
