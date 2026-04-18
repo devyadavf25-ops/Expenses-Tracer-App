@@ -55,6 +55,12 @@ const User = sequelize.define('User', {
     type: DataTypes.ENUM('user', 'admin'),
     defaultValue: 'user',
   },
+  resetPasswordToken: {
+    type: DataTypes.STRING,
+  },
+  resetPasswordExpire: {
+    type: DataTypes.DATE,
+  },
 }, {
   timestamps: true,
   hooks: {
