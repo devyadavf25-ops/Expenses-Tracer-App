@@ -2,7 +2,7 @@
   "rewrites": [
     {
       "source": "/api/:path*",
-      "destination": "https://expense-tracer-server-9nsc.onrender.com/api/:path*"
+      "destination": "https://expenses-tracer-app.onrender.com/api/:path*"
     },
     {
       "source": "/(.*)",
