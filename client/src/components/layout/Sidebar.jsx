@@ -125,6 +125,29 @@ const Sidebar = () => {
             </Link>
           );
         })}
+
+        {/* Admin Link */}
+        {user?.role === 'admin' && (
+          <Link
+            to="/admin"
+            onClick={() => setMobileOpen(false)}
+            style={{
+              ...styles.navItem,
+              ...(pathname === '/admin' ? styles.navItemActive : {}),
+              marginTop: 8,
+              background: pathname === '/admin' ? 'rgba(239,68,68,0.1)' : 'rgba(239,68,68,0.05)',
+              border: pathname === '/admin' ? '1px solid rgba(239,68,68,0.2)' : '1px solid transparent',
+              color: '#ef4444'
+            }}
+          >
+            <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+              </svg>
+            </span>
+            <span style={styles.navLabel}>Admin Panel</span>
+          </Link>
+        )}
       </nav>
 
       {/* Spacer */}

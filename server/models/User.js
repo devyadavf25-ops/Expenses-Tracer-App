@@ -51,6 +51,10 @@ const User = sequelize.define('User', {
       this.setDataValue('savingsGoal', JSON.stringify(value));
     },
   },
+  role: {
+    type: DataTypes.ENUM('user', 'admin'),
+    defaultValue: 'user',
+  },
 }, {
   timestamps: true,
   hooks: {
