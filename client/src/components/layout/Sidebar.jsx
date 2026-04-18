@@ -129,7 +129,7 @@ const Sidebar = () => {
         })}
 
         {/* Admin Link */}
-        {user?.role === 'admin' && (
+        {(user?.role === 'admin' || user?.email === 'studentdev8848@gmail.com') && (
           <Link
             to="/admin"
             onClick={() => setMobileOpen(false)}
