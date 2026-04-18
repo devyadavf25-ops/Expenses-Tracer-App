@@ -3,9 +3,9 @@ import { queueMutation } from './offlineSync';
 import toast from 'react-hot-toast';
 
 const API = axios.create({
-  baseURL: '/api', // Force use of Netlify proxy/bridge
+  baseURL: import.meta.env.VITE_API_URL || '/api',
   headers: { 'Content-Type': 'application/json' },
-  timeout: 15000, // Give Render 15 seconds to respond
+  timeout: 15000,
 });
 
 // Attach JWT token to every request
