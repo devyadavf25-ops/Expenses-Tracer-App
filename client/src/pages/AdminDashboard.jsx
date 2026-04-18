@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import axios from 'axios';
+import API from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import { formatCurrency } from '../utils/formatCurrency';
 import {
@@ -25,10 +25,7 @@ const AdminDashboard = () => {
 
   const handleSelfPromotion = async () => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.post('/api/auth/promote-me', {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await API.post('/auth/promote-me');
       // Refresh to show admin data
       window.location.href = '/admin';
     } catch (e) {
@@ -39,12 +36,9 @@ const AdminDashboard = () => {
 
   const fetchAdminData = async () => {
     try {
-      const token = localStorage.getItem('token');
-      const config = { headers: { Authorization: `Bearer ${token}` } };
-      
       const [statsRes, usersRes] = await Promise.all([
-        axios.get('/api/admin/stats', config),
-        axios.get('/api/admin/users', config)
+        API.get('/admin/stats'),
+        API.get('/admin/users')
       ]);
 
       setStats(statsRes.data.data);

@@ -47,8 +47,9 @@ const Chatbot = () => {
     try {
       const res = await aiChat(text.trim());
       setMessages(prev => [...prev, { role: 'bot', text: res.data.data.reply }]);
-    } catch {
-      setMessages(prev => [...prev, { role: 'bot', text: "I'm having trouble connecting to my AI brain. Please ensure an AI API key (Gemini or OpenAI) is configured in your server settings." }]);
+    } catch (e) {
+      console.error('Chatbot Error:', e);
+      setMessages(prev => [...prev, { role: 'bot', text: "I'm having trouble connecting to my AI brain. Please ensure an AI API key is configured." }]);
     } finally {
       setLoading(false);
     }
