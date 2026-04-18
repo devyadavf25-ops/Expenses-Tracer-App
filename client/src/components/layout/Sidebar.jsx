@@ -78,6 +78,8 @@ const Sidebar = () => {
   const { toggleTheme, isDark } = useTheme();
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  console.log('DEBUG SIDEBAR USER:', user);
+
   const handleLogout = () => { logout(); navigate('/login'); };
 
   const SidebarContent = () => (

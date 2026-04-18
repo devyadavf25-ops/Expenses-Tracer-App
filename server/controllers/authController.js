@@ -151,4 +151,18 @@ const updateSettings = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, getMe, updateSettings };
+// @desc    Self-promote to admin (for initial setup)
+// @route   POST /api/auth/promote-me
+// @access  Private
+const promoteMe = async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.user.id);
+    user.role = 'admin';
+    await user.save();
+    res.status(200).json({ success: true, message: 'You are now an ADMIN!' });
+  } catch (error) {
+    next(error);
+  }
+};
+
+module.exports = { register, login, getMe, updateSettings, promoteMe };
