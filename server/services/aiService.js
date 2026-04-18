@@ -81,27 +81,38 @@ const categorizeExpense = async (title, amount) => {
   }
 };
 
-const getSpendingInsights = async (expenses, currency = 'NPR') => {
+const getSpendingInsights = async (expenses, currency = 'NPR', ledgerData = []) => {
   try {
     const totalSpent = expenses.reduce((sum, e) => sum + e.amount, 0);
     const summary = expenses.slice(0, 30).map(e => `${e.category}: ${e.amount}`).join('\n');
+    
+    // Summarize ledger data
+    const pendingLent = ledgerData.filter(e => e.type === 'lent' && e.status !== 'settled').reduce((s, e) => s + (e.amount - e.settledAmount), 0);
+    const pendingBorrowed = ledgerData.filter(e => e.type === 'borrowed' && e.status !== 'settled').reduce((s, e) => s + (e.amount - e.settledAmount), 0);
 
-    const systemPrompt = `Analyze these expenses and provide 5 insights in a JSON array. 
+    const systemPrompt = `Analyze these expenses and ledger entries. Provide 5 insights in a JSON array. 
+    Lend/Borrow Context: People owe user ${currency} ${pendingLent}, user owes others ${currency} ${pendingBorrowed}.
     Each object: {"type": "tip|warning|success|info", "title": "...", "description": "..."}`;
     
     const userPrompt = `Total Spent: ${currency} ${totalSpent}\nRecent Data:\n${summary}`;
     
     const insights = await runAiTask({ systemPrompt, userPrompt, jsonMode: true });
-    return { insights: Array.isArray(insights) ? insights : insights.insights, totalSpent };
+    return { insights: Array.isArray(insights) ? insights : (insights.insights || []), totalSpent };
   } catch (error) {
     return { insights: [{ type: 'info', title: 'AI Limit', description: 'AI is currently unavailable. Please check your API keys.' }], error: error.message };
   }
 };
 
-const chatWithExpenses = async (message, expenses, currency = 'NPR') => {
+const chatWithExpenses = async (message, expenses, currency = 'NPR', ledgerData = []) => {
   try {
     const recent = expenses.slice(0, 20).map(e => `${e.date}: ${e.title} (${e.amount})`).join(', ');
-    const systemPrompt = `You are a helpful finance assistant. Currency: ${currency}. Recent history: ${recent}`;
+    const ledger = ledgerData.map(e => `${e.personName} (${e.type}): Total ${e.amount}, Settled ${e.settledAmount}, Status ${e.status}`).join('; ');
+    
+    const systemPrompt = `You are a helpful finance assistant. Currency: ${currency}. 
+    Recent Expenses: ${recent}
+    Ledger (Lend/Borrow) Records: ${ledger}
+    If the user asks about people who owe them or who they owe, use the Ledger records.
+    Keep answers concise and friendly.`;
     
     const reply = await runAiTask({ systemPrompt, userPrompt: message, jsonMode: false });
     return { reply };

@@ -3,14 +3,34 @@ import Sidebar from './Sidebar';
 import { Outlet } from 'react-router-dom';
 import Chatbot from '../ai/Chatbot';
 import ExpenseFormModal from '../expenses/ExpenseFormModal';
+import { syncData } from '../../services/offlineSync';
+import API from '../../services/api';
 
 const Layout = () => {
   const [showModal, setShowModal] = useState(false);
+  const [isOnline, setIsOnline] = useState(navigator.onLine);
 
   useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      syncData(API);
+    };
+    const handleOffline = () => setIsOnline(false);
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    
+    // Initial sync check
+    if (navigator.onLine) syncData(API);
+
     const handleOpenModal = () => setShowModal(true);
     window.addEventListener('open-expense-modal', handleOpenModal);
-    return () => window.removeEventListener('open-expense-modal', handleOpenModal);
+    
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener('open-expense-modal', handleOpenModal);
+    };
   }, []);
 
   const handleCloseModal = (refresh) => {
@@ -64,6 +84,24 @@ const Layout = () => {
 
       {showModal && (
         <ExpenseFormModal onClose={handleCloseModal} />
+      )}
+
+      {!isOnline && (
+        <div style={{
+          position: 'fixed', bottom: 24, left: '50%', transform: 'translateX(-50%)',
+          background: 'rgba(239, 68, 68, 0.95)', color: 'white',
+          padding: '10px 20px', borderRadius: 50, fontSize: 13, fontWeight: 700,
+          zIndex: 10000, display: 'flex', alignItems: 'center', gap: 10,
+          boxShadow: '0 8px 32px rgba(239, 68, 68, 0.3)', backdropFilter: 'blur(8px)',
+          border: '1px solid rgba(255,255,255,0.1)',
+          animation: 'slideUp 0.3s ease-out',
+        }}>
+          <span style={{ 
+            width: 8, height: 8, borderRadius: '50%', background: 'white', 
+            boxShadow: '0 0 10px white'
+          }} />
+          Offline Mode — Transactions will sync later
+        </div>
       )}
 
       <Chatbot />

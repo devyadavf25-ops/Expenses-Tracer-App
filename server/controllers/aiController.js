@@ -1,4 +1,5 @@
 const Expense = require('../models/Expense');
+const LedgerEntry = require('../models/LedgerEntry');
 const { categorizeExpense, getSpendingInsights, chatWithExpenses } = require('../services/aiService');
 
 // @desc    AI categorize an expense
@@ -36,12 +37,16 @@ const aiInsights = async (req, res, next) => {
       order: [['date', 'DESC']] 
     });
 
-    if (expenses.length === 0) {
+    const ledgerEntries = await LedgerEntry.findAll({
+      where: { userId: req.user.id }
+    });
+
+    if (expenses.length === 0 && ledgerEntries.length === 0) {
       return res.status(200).json({
         success: true,
         data: {
           insights: [
-            { type: 'info', title: 'No Data Yet', description: 'Add some expenses to get AI-powered insights about your spending patterns.' }
+            { type: 'info', title: 'No Data Yet', description: 'Add some expenses or ledger entries to get AI-powered insights.' }
           ],
           totalSpent: 0,
           byCategory: {},
@@ -51,7 +56,9 @@ const aiInsights = async (req, res, next) => {
 
     // Convert Sequelize instances to plain JS objects for the service
     const plainExpenses = expenses.map(e => e.toJSON());
-    const result = await getSpendingInsights(plainExpenses, req.user.currency);
+    const plainLedger = ledgerEntries.map(e => e.toJSON());
+    
+    const result = await getSpendingInsights(plainExpenses, req.user.currency, plainLedger);
 
     res.status(200).json({
       success: true,
@@ -81,8 +88,14 @@ const aiChat = async (req, res, next) => {
       order: [['date', 'DESC']] 
     });
 
+    const ledgerEntries = await LedgerEntry.findAll({
+      where: { userId: req.user.id }
+    });
+
     const plainExpenses = expenses.map(e => e.toJSON());
-    const result = await chatWithExpenses(message, plainExpenses, req.user.currency);
+    const plainLedger = ledgerEntries.map(e => e.toJSON());
+
+    const result = await chatWithExpenses(message, plainExpenses, req.user.currency, plainLedger);
 
     res.status(200).json({
       success: true,

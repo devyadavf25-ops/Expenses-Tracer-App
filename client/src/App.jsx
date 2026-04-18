@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard';
 import Expenses from './pages/Expenses';
 import AiInsightsPage from './pages/AiInsightsPage';
 import Settings from './pages/Settings';
+import Ledger from './pages/Ledger';
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -66,6 +67,7 @@ const AppContent = () => {
           <Route index element={<Dashboard />} />
           <Route path="expenses" element={<Expenses />} />
           <Route path="ai-insights" element={<AiInsightsPage />} />
+          <Route path="ledger" element={<Ledger />} />
           <Route path="settings" element={<Settings />} />
         </Route>
 

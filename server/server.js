@@ -12,11 +12,13 @@ dotenv.config();
 // Import models first so Sequelize registers them before sync()
 require('./models/User');
 require('./models/Expense');
+require('./models/LedgerEntry');
 
 // Import routes
 const authRoutes = require('./routes/authRoutes');
 const expenseRoutes = require('./routes/expenseRoutes');
 const aiRoutes = require('./routes/aiRoutes');
+const ledgerRoutes = require('./routes/ledgerRoutes');
 
 // Initialize Express app
 const app = express();
@@ -58,6 +60,7 @@ app.get('/api/ai/check-keys', (req, res) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/expenses', expenseRoutes);
 app.use('/api/ai', aiRoutes);
+app.use('/api/ledger', ledgerRoutes);
 
 // ========================
 // Error Handler (must be last)
@@ -76,7 +79,8 @@ const startServer = async () => {
       console.log(`📡 API Health: http://localhost:${PORT}/api/health`);
       console.log(`🔐 Auth API:   http://localhost:${PORT}/api/auth`);
       console.log(`💰 Expense API: http://localhost:${PORT}/api/expenses`);
-      console.log(`🤖 AI API:     http://localhost:${PORT}/api/ai\n`);
+      console.log(`🤖 AI API:     http://localhost:${PORT}/api/ai`);
+      console.log(`📒 Ledger API: http://localhost:${PORT}/api/ledger\n`);
     });
   } catch (error) {
     console.error(`❌ Shutdown: ${error.message}`);

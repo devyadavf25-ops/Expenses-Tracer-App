@@ -7,6 +7,7 @@ import StatCard from '../components/dashboard/StatCard';
 import SpendingChart from '../components/dashboard/SpendingChart';
 import CategoryPieChart from '../components/dashboard/CategoryPieChart';
 import RecentExpenses from '../components/dashboard/RecentExpenses';
+import LedgerSummaryWidget from '../components/dashboard/LedgerSummaryWidget';
 import {
   HiOutlineCurrencyDollar, HiOutlineCalendar,
   HiOutlineTag, HiOutlineCollection, HiOutlineTrendingUp,
@@ -60,25 +61,42 @@ const Dashboard = () => {
             {new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric', year: 'numeric' })}
           </p>
         </div>
-        <button
-          onClick={() => window.dispatchEvent(new CustomEvent('open-expense-modal'))}
-          style={{
-            display: 'flex', alignItems: 'center', gap: 8,
-            padding: '12px 22px', borderRadius: 14,
-            background: 'linear-gradient(135deg, #00c866, #00a855)',
-            border: 'none', color: '#fff',
-            fontSize: 13, fontWeight: 700, cursor: 'pointer',
-            boxShadow: '0 4px 20px var(--accent-glow)',
-            transition: 'all 0.2s',
-          }}
-          onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 28px var(--accent-glow)'; }}
-          onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px var(--accent-glow)'; }}
-        >
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
-            <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
-          </svg>
-          Add Transaction
-        </button>
+        <div style={{ display: 'flex', gap: 12 }}>
+          <button
+            onClick={() => window.location.href = '/ledger'}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: '12px 20px', borderRadius: 14,
+              background: 'var(--bg-card-hover)',
+              border: '1px solid var(--border)', color: 'var(--text-primary)',
+              fontSize: 13, fontWeight: 700, cursor: 'pointer',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--accent)'}
+            onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
+          >
+            📒 My Ledger
+          </button>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('open-expense-modal'))}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 8,
+              padding: '12px 22px', borderRadius: 14,
+              background: 'linear-gradient(135deg, #00c866, #00a855)',
+              border: 'none', color: '#fff',
+              fontSize: 13, fontWeight: 700, cursor: 'pointer',
+              boxShadow: '0 4px 20px var(--accent-glow)',
+              transition: 'all 0.2s',
+            }}
+            onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 28px var(--accent-glow)'; }}
+            onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px var(--accent-glow)'; }}
+          >
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round">
+              <line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" />
+            </svg>
+            Add Transaction
+          </button>
+        </div>
       </div>
 
       {/* ── Stat Cards ── */}
@@ -138,8 +156,11 @@ const Dashboard = () => {
         <CategoryPieChart data={categoryData} />
       </div>
 
-      {/* ── Recent Expenses ── */}
-      <RecentExpenses />
+      {/* ── Ledger + Recent Expenses ── */}
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 380px', gap: 16 }} className="chart-grid">
+        <RecentExpenses />
+        <LedgerSummaryWidget />
+      </div>
     </div>
   );
 };
