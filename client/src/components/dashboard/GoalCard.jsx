@@ -17,37 +17,74 @@ const GoalCard = ({ title, target, current, targetDate, onEdit }) => {
   const strokeDashoffset = circumference - (percent / 100) * circumference;
 
   return (
-    <div className="bg-white rounded-[2.5rem] p-8 shadow-[0_20px_50px_-20px_rgba(0,0,0,0.05)] border border-slate-100 flex flex-col justify-center min-h-[160px] group relative overflow-hidden">
-      <div className="absolute top-4 right-4 p-2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
-        <button 
+    <div style={{
+      background: 'var(--bg-card)',
+      borderRadius: 20,
+      padding: '28px 24px',
+      border: '1px solid var(--border)',
+      display: 'flex',
+      flexDirection: 'column',
+      justifyContent: 'center',
+      minHeight: 160,
+      position: 'relative',
+      overflow: 'hidden',
+      transition: 'all 0.3s',
+    }}
+      onMouseEnter={e => { e.currentTarget.style.borderColor = 'var(--border-hover)'; e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.querySelector('.goal-edit-btn').style.opacity = '1'; }}
+      onMouseLeave={e => { e.currentTarget.style.borderColor = 'var(--border)'; e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.querySelector('.goal-edit-btn').style.opacity = '0'; }}
+    >
+      {/* Edit button */}
+      <div className="goal-edit-btn" style={{ position: 'absolute', top: 14, right: 14, opacity: 0, transition: 'opacity 0.2s' }}>
+        <button
           onClick={onEdit}
-          className="p-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer border border-slate-100"
+          style={{
+            width: 34, height: 34, borderRadius: 10,
+            background: 'var(--bg-card-hover)',
+            border: '1px solid var(--border)',
+            color: 'var(--text-muted)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            cursor: 'pointer', transition: 'all 0.2s',
+          }}
+          onMouseEnter={e => { e.currentTarget.style.color = 'var(--accent)'; e.currentTarget.style.borderColor = 'var(--accent)'; }}
+          onMouseLeave={e => { e.currentTarget.style.color = 'var(--text-muted)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
         >
           <HiOutlinePencil size={14} />
         </button>
       </div>
 
-      <div className="flex items-center justify-between gap-6">
-        <div className="flex-1">
-          <div className="flex items-center gap-3 mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-purple-50 flex items-center justify-center border border-purple-100">
-              <HiOutlineFlag className="text-purple-600" size={24} />
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 20 }}>
+        {/* Left side */}
+        <div style={{ flex: 1 }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 12, marginBottom: 18 }}>
+            <div style={{
+              width: 44, height: 44, borderRadius: 14,
+              background: 'rgba(167,139,250,0.1)',
+              border: '1px solid rgba(167,139,250,0.2)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+            }}>
+              <HiOutlineFlag color="#a78bfa" size={22} />
             </div>
             <div>
-              <h3 className="text-[10px] uppercase tracking-[0.3em] font-black text-slate-400 mb-1">{title}</h3>
-              <p className="text-2xl font-black text-slate-900 tracking-tighter">{formatCurrency(current)}</p>
+              <h3 style={{
+                fontSize: 10, fontWeight: 800, color: 'var(--text-muted)',
+                textTransform: 'uppercase', letterSpacing: '0.2em', margin: '0 0 4px',
+              }}>{title}</h3>
+              <p style={{
+                fontSize: 20, fontWeight: 900, color: 'var(--text-primary)',
+                letterSpacing: '-0.5px', margin: 0,
+              }}>{formatCurrency(current)}</p>
             </div>
           </div>
-          
-          <div className="flex items-center justify-between max-w-[200px]">
-            <div className="text-left">
-              <p className="text-[9px] uppercase tracking-widest font-extrabold text-slate-400 mb-0.5 opacity-70">Target</p>
-              <p className="text-xs font-black text-purple-600">{formatCurrency(target)}</p>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: 24, maxWidth: 220 }}>
+            <div>
+              <p style={{ fontSize: 9, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.15em', margin: '0 0 2px', opacity: 0.7 }}>Target</p>
+              <p style={{ fontSize: 12, fontWeight: 800, color: '#a78bfa', margin: 0 }}>{formatCurrency(target)}</p>
             </div>
             {daysLeft !== null && (
-              <div className="text-right">
-                <p className="text-[9px] uppercase tracking-widest font-extrabold text-slate-400 mb-0.5 opacity-70">Status</p>
-                <p className={`text-xs font-black ${daysLeft < 0 ? 'text-red-500' : 'text-green-500'}`}>
+              <div style={{ textAlign: 'right' }}>
+                <p style={{ fontSize: 9, fontWeight: 800, color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.15em', margin: '0 0 2px', opacity: 0.7 }}>Status</p>
+                <p style={{ fontSize: 12, fontWeight: 800, color: daysLeft < 0 ? '#f87171' : '#34d399', margin: 0 }}>
                   {daysLeft < 0 ? `${Math.abs(daysLeft)}d overdue` : `${daysLeft}d left`}
                 </p>
               </div>
@@ -56,34 +93,39 @@ const GoalCard = ({ title, target, current, targetDate, onEdit }) => {
         </div>
 
         {/* Circular Progress */}
-        <div className="relative w-24 h-24 flex-shrink-0">
-          <svg className="w-full h-full transform -rotate-90 filter drop-shadow-sm">
+        <div style={{ position: 'relative', width: 88, height: 88, flexShrink: 0 }}>
+          <svg style={{ width: '100%', height: '100%', transform: 'rotate(-90deg)' }}>
             {/* Background circle */}
             <circle
-              className="text-slate-100"
               strokeWidth="10"
-              stroke="currentColor"
+              stroke="var(--bg-card-hover)"
               fill="transparent"
               r={radius}
-              cx="48"
-              cy="48"
+              cx="44"
+              cy="44"
             />
             {/* Progress circle */}
             <circle
-              className="text-purple-600 transition-all duration-1000 ease-[cubic-bezier(0.16,1,0.3,1)]"
               strokeWidth="10"
               strokeDasharray={circumference}
               strokeDashoffset={strokeDashoffset}
               strokeLinecap="round"
-              stroke="currentColor"
+              stroke="#a78bfa"
               fill="transparent"
               r={radius}
-              cx="48"
-              cy="48"
+              cx="44"
+              cy="44"
+              style={{ transition: 'stroke-dashoffset 1s cubic-bezier(0.16, 1, 0.3, 1)' }}
             />
           </svg>
-          <div className="absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-lg font-black text-slate-900 tracking-tighter">{Math.round(percent)}%</span>
+          <div style={{
+            position: 'absolute', inset: 0,
+            display: 'flex', flexDirection: 'column',
+            alignItems: 'center', justifyContent: 'center',
+          }}>
+            <span style={{ fontSize: 17, fontWeight: 900, color: 'var(--text-primary)', letterSpacing: '-0.5px' }}>
+              {Math.round(percent)}%
+            </span>
           </div>
         </div>
       </div>

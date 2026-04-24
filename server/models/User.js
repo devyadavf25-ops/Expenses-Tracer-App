@@ -1,6 +1,8 @@
 const { DataTypes } = require('sequelize');
 const { sequelize } = require('../config/db');
 const bcrypt = require('bcryptjs');
+const Expense = require('./Expense');
+const LedgerEntry = require('./LedgerEntry');
 
 const User = sequelize.define('User', {
   id: {
@@ -20,7 +22,6 @@ const User = sequelize.define('User', {
     type: DataTypes.STRING,
     allowNull: false,
     unique: true,
-    lowercase: true,
     validate: {
       isEmail: { msg: 'Please provide a valid email' },
     },
@@ -64,6 +65,12 @@ const User = sequelize.define('User', {
 }, {
   timestamps: true,
   hooks: {
+    beforeValidate: (user) => {
+      // Normalize email to lowercase (replaces Mongoose's `lowercase: true`)
+      if (user.email) {
+        user.email = user.email.toLowerCase().trim();
+      }
+    },
     beforeCreate: async (user) => {
       if (user.password) {
         const salt = await bcrypt.genSalt(12);
@@ -83,5 +90,12 @@ const User = sequelize.define('User', {
 User.prototype.comparePassword = async function (enteredPassword) {
   return await bcrypt.compare(enteredPassword, this.password);
 };
+
+// Associations (Bug 7 fix: proper FK constraints + cascade)
+User.hasMany(Expense, { foreignKey: 'userId', onDelete: 'CASCADE' });
+Expense.belongsTo(User, { foreignKey: 'userId' });
+
+User.hasMany(LedgerEntry, { foreignKey: 'userId', onDelete: 'CASCADE' });
+LedgerEntry.belongsTo(User, { foreignKey: 'userId' });
 
 module.exports = User;

@@ -15,24 +15,8 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const params = new URLSearchParams(window.location.search);
-    if (params.get('secret') === 'activate') {
-      handleSelfPromotion();
-    } else {
-      fetchAdminData();
-    }
+    fetchAdminData();
   }, []);
-
-  const handleSelfPromotion = async () => {
-    try {
-      await API.post('/auth/promote-me');
-      // Refresh to show admin data
-      window.location.href = '/admin';
-    } catch (e) {
-      console.error('Promotion failed:', e);
-      fetchAdminData();
-    }
-  };
 
   const fetchAdminData = async () => {
     try {

@@ -84,19 +84,19 @@ const Chatbot = () => {
       position: 'fixed', bottom: 16, right: 16,
       width: 380, maxWidth: 'calc(100vw - 32px)',
       height: 550, maxHeight: 'calc(100vh - 32px)',
-      background: '#04101e',
-      border: '1px solid rgba(0,232,122,0.15)',
+      background: 'var(--bg-card)',
+      border: '1px solid var(--border)',
       borderRadius: 24, zIndex: 100,
       display: 'flex', flexDirection: 'column',
-      boxShadow: '0 24px 80px rgba(0,0,0,0.8), 0 0 40px rgba(0,232,122,0.1)',
+      boxShadow: '0 24px 80px rgba(0,0,0,0.5), 0 0 40px var(--accent-glow)',
       overflow: 'hidden',
     }}>
       {/* Header */}
       <div style={{
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         padding: '16px 20px',
-        background: 'linear-gradient(180deg, #071525 0%, #04101e 100%)',
-        borderBottom: '1px solid rgba(0,232,122,0.1)',
+        background: 'var(--bg-card)',
+        borderBottom: '1px solid var(--border)',
       }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: 12 }}>
           <div style={{
@@ -105,7 +105,7 @@ const Chatbot = () => {
             display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 20,
           }}>✨</div>
           <div>
-            <p style={{ fontSize: 13, fontWeight: 800, color: '#d0f0e0', margin: '0 0 2px' }}>Financial AI</p>
+            <p style={{ fontSize: 13, fontWeight: 800, color: 'var(--text-primary)', margin: '0 0 2px' }}>Financial AI</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
               <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#00e87a', boxShadow: '0 0 8px #00e87a' }} className="animate-pulse" />
               <p style={{ fontSize: 9, fontWeight: 700, color: '#00e87a', textTransform: 'uppercase', letterSpacing: '0.1em', margin: 0 }}>Active Now</p>
@@ -133,9 +133,9 @@ const Chatbot = () => {
               <div style={{
                 maxWidth: '85%', padding: '12px 16px', borderRadius: 18,
                 fontSize: 13, lineHeight: 1.5,
-                background: msg.role === 'user' ? 'linear-gradient(135deg, #00c866, #00a855)' : '#071525',
-                color: msg.role === 'user' ? '#fff' : '#d0f0e0',
-                border: msg.role === 'user' ? 'none' : '1px solid rgba(0,232,122,0.1)',
+                background: msg.role === 'user' ? 'linear-gradient(135deg, #00c866, #00a855)' : 'var(--bg-card-hover)',
+                color: msg.role === 'user' ? '#fff' : 'var(--text-primary)',
+                border: msg.role === 'user' ? 'none' : '1px solid var(--border)',
                 borderBottomRightRadius: msg.role === 'user' ? 4 : 18,
                 borderBottomLeftRadius: msg.role === 'bot' ? 4 : 18,
               }}>{msg.text}</div>
@@ -145,7 +145,7 @@ const Chatbot = () => {
             <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
               <div style={{
                 padding: '16px', borderRadius: 18, borderBottomLeftRadius: 4,
-                background: '#071525', border: '1px solid rgba(0,232,122,0.1)',
+                background: 'var(--bg-card-hover)', border: '1px solid var(--border)',
                 display: 'flex', gap: 6,
               }}>
                 <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#00e87a', animation: 'bounce 1s infinite' }} />
@@ -178,18 +178,18 @@ const Chatbot = () => {
       )}
 
       {/* Input */}
-      <div style={{ padding: 16, background: '#071525', borderTop: '1px solid rgba(0,232,122,0.1)' }}>
+      <div style={{ padding: 16, background: 'var(--bg-card)', borderTop: '1px solid var(--border)' }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', gap: 10 }}>
           <input type="text" value={input} onChange={e => setInput(e.target.value)} disabled={loading}
             placeholder="Ask AI assistant..."
             style={{
               flex: 1, height: 44, borderRadius: 12,
-              background: 'rgba(0,232,122,0.04)', border: '1px solid rgba(0,232,122,0.12)',
-              padding: '0 16px', color: '#d0f0e0', fontSize: 13, outline: 'none',
+              background: 'var(--bg-card-hover)', border: '1px solid var(--border)',
+              padding: '0 16px', color: 'var(--text-primary)', fontSize: 13, outline: 'none',
               transition: 'all 0.2s',
             }}
-            onFocus={e => { e.target.style.borderColor = '#00e87a'; }}
-            onBlur={e => { e.target.style.borderColor = 'rgba(0,232,122,0.12)'; }}
+            onFocus={e => { e.target.style.borderColor = 'var(--accent)'; }}
+            onBlur={e => { e.target.style.borderColor = 'var(--border)'; }}
           />
           <button type="submit" disabled={loading || !input.trim()} style={{
             width: 44, height: 44, borderRadius: 12,

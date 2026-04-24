@@ -43,10 +43,11 @@ const Layout = () => {
   return (
     <div style={{
       minHeight: '100vh',
-      background: 'linear-gradient(135deg, #030d1a 0%, #051224 55%, #071830 100%)',
-      color: '#d0f0e0',
+      background: 'var(--bg-gradient)',
+      color: 'var(--text-primary)',
       fontFamily: "'Inter', 'Segoe UI', system-ui, sans-serif",
       position: 'relative',
+      transition: 'background 0.3s ease, color 0.3s ease',
     }}>
       {/* Background ambient glows */}
       <div style={{

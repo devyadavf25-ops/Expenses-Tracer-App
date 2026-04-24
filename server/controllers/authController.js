@@ -145,6 +145,8 @@ const updateSettings = async (req, res, next) => {
         id: user.id,
         name: user.name,
         email: user.email,
+        currency: user.currency,
+        role: user.role,
         monthlyBudget: user.monthlyBudget,
         savingsGoal: user.savingsGoal,
       },
@@ -174,7 +176,7 @@ const forgotPassword = async (req, res, next) => {
     // Set expire (10 minutes)
     user.resetPasswordExpire = Date.now() + 10 * 60 * 1000;
 
-    await user.save();
+    await user.save({ fields: ['resetPasswordToken', 'resetPasswordExpire'] });
 
     // Create reset url
     const resetUrl = `${process.env.CLIENT_URL || req.get('origin')}/reset-password/${resetToken}`;
@@ -236,13 +238,16 @@ const resetPassword = async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      token: generateToken(user.id),
-      user: {
-        id: user.id,
-        name: user.name,
-        email: user.email,
-        currency: user.currency,
-        role: user.role,
+      message: 'Password reset successful',
+      data: {
+        user: {
+          id: user.id,
+          name: user.name,
+          email: user.email,
+          currency: user.currency,
+          role: user.role,
+        },
+        token: generateToken(user.id),
       },
     });
   } catch (error) {
@@ -250,4 +255,4 @@ const resetPassword = async (req, res, next) => {
   }
 };
 
-module.exports = { register, login, getMe, updateSettings, promoteMe, forgotPassword, resetPassword };
+module.exports = { register, login, getMe, updateSettings, forgotPassword, resetPassword };

@@ -32,7 +32,7 @@ const loginRules = [
 const expenseRules = [
   body('title').trim().notEmpty().withMessage('Title is required'),
   body('amount')
-    .isFloat({ min: 0 })
+    .isFloat({ min: 0.01 })
     .withMessage('Amount must be a positive number'),
   body('category').optional().isString(),
   body('date').optional().isISO8601().withMessage('Invalid date format'),

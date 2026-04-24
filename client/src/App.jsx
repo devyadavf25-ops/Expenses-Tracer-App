@@ -11,6 +11,8 @@ import AiInsightsPage from './pages/AiInsightsPage';
 import Settings from './pages/Settings';
 import Ledger from './pages/Ledger';
 import AdminDashboard from './pages/AdminDashboard';
+import ForgotPassword from './pages/ForgotPassword';
+import ResetPassword from './pages/ResetPassword';
 
 // Protected route wrapper
 const ProtectedRoute = ({ children }) => {
@@ -62,6 +64,8 @@ const AppContent = () => {
         {/* Public routes */}
         <Route path="/login" element={<PublicRoute><Login /></PublicRoute>} />
         <Route path="/register" element={<PublicRoute><Register /></PublicRoute>} />
+        <Route path="/forgot" element={<PublicRoute><ForgotPassword /></PublicRoute>} />
+        <Route path="/reset-password/:token" element={<PublicRoute><ResetPassword /></PublicRoute>} />
 
         {/* Protected routes */}
         <Route path="/" element={<ProtectedRoute><Layout /></ProtectedRoute>}>

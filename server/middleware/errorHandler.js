@@ -1,29 +1,37 @@
 const errorHandler = (err, req, res, next) => {
   console.error('❌ Error:', err.message);
 
-  // Mongoose bad ObjectId
-  if (err.name === 'CastError') {
-    return res.status(400).json({
-      success: false,
-      message: 'Resource not found',
-    });
-  }
-
-  // Mongoose duplicate key
-  if (err.code === 11000) {
-    const field = Object.keys(err.keyValue)[0];
+  // Sequelize unique constraint error (e.g. duplicate email)
+  if (err.name === 'SequelizeUniqueConstraintError') {
+    const field = err.errors?.[0]?.path || 'field';
     return res.status(400).json({
       success: false,
       message: `Duplicate value for ${field}. Please use another value.`,
     });
   }
 
-  // Mongoose validation error
-  if (err.name === 'ValidationError') {
-    const messages = Object.values(err.errors).map((val) => val.message);
+  // Sequelize validation error (e.g. model-level validators)
+  if (err.name === 'SequelizeValidationError') {
+    const messages = err.errors.map((e) => e.message);
     return res.status(400).json({
       success: false,
       message: messages.join(', '),
+    });
+  }
+
+  // Sequelize database error (e.g. bad query, type mismatch)
+  if (err.name === 'SequelizeDatabaseError') {
+    return res.status(400).json({
+      success: false,
+      message: 'Database error: ' + err.message,
+    });
+  }
+
+  // Sequelize foreign key constraint error
+  if (err.name === 'SequelizeForeignKeyConstraintError') {
+    return res.status(400).json({
+      success: false,
+      message: 'Referenced resource not found.',
     });
   }
 
@@ -49,3 +57,4 @@ const errorHandler = (err, req, res, next) => {
 };
 
 module.exports = errorHandler;
+
