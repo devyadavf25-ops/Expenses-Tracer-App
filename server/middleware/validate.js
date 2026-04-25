@@ -16,7 +16,11 @@ const handleValidation = (req, res, next) => {
 // Validation rules for registration
 const registerRules = [
   body('name').trim().notEmpty().withMessage('Name is required'),
-  body('email').isEmail().withMessage('Please provide a valid email'),
+  body('email')
+    .trim()
+    .isEmail()
+    .withMessage('Please provide a valid email')
+    .customSanitizer((value) => value.toLowerCase()),
   body('password')
     .isLength({ min: 6 })
     .withMessage('Password must be at least 6 characters'),
@@ -24,7 +28,13 @@ const registerRules = [
 
 // Validation rules for login
 const loginRules = [
-  body('email').isEmail().withMessage('Please provide a valid email'),
+  body('email')
+    .trim()
+    .notEmpty()
+    .withMessage('Email is required')
+    .isEmail()
+    .withMessage('Please provide a valid email')
+    .customSanitizer((value) => value.toLowerCase()),
   body('password').notEmpty().withMessage('Password is required'),
 ];
 

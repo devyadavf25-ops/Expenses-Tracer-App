@@ -18,8 +18,13 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     const token = localStorage.getItem('token');
     const savedUser = localStorage.getItem('user');
-    if (token && savedUser) {
-      setUser(JSON.parse(savedUser));
+    if (token && savedUser && savedUser !== 'undefined') {
+      try {
+        setUser(JSON.parse(savedUser));
+      } catch (err) {
+        localStorage.removeItem('user');
+        setUser(null);
+      }
       // Verify token is still valid
       getMe()
         .then((res) => {
@@ -39,7 +44,8 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     try {
-      const res = await loginUser({ email, password });
+      const normalizedEmail = email.trim().toLowerCase();
+      const res = await loginUser({ email: normalizedEmail, password });
       const { user: userData, token } = res.data.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));
@@ -55,7 +61,8 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (name, email, password) => {
     try {
-      const res = await registerUser({ name, email, password });
+      const normalizedEmail = email.trim().toLowerCase();
+      const res = await registerUser({ name, email: normalizedEmail, password });
       const { user: userData, token } = res.data.data;
       localStorage.setItem('token', token);
       localStorage.setItem('user', JSON.stringify(userData));

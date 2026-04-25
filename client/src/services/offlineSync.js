@@ -86,7 +86,19 @@ export const syncData = async (apiInstance) => {
       console.log(`[OfflineSync] Successfully synced mutation ${id}`);
     } catch (error) {
       console.error(`[OfflineSync] Failed to sync mutation ${mutation.id}:`, error);
-      // Stop syncing if we hit an error (maybe server is still down or token expired)
+      
+      // If the server responded with a 4xx error (except 401/429), the request is invalid.
+      // We should remove it so it doesn't block the queue forever.
+      if (error.response && error.response.status >= 400 && error.response.status < 500) {
+        // Special case: 401 (Unauthorized) might mean token expired, keep it to retry after login
+        if (error.response.status !== 401 && error.response.status !== 429) {
+          console.warn(`[OfflineSync] Removing invalid mutation ${mutation.id} due to status ${error.response.status}`);
+          await removeMutation(mutation.id);
+          continue; // Move to next mutation
+        }
+      }
+      
+      // Stop syncing for network errors or server errors (5xx)
       break;
     }
   }

@@ -155,8 +155,10 @@ const Login = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const normalizedEmail = email.trim().toLowerCase();
+    setEmail(normalizedEmail);
     setLoading(true);
-    const result = await login(email, password);
+    const result = await login(normalizedEmail, password);
     setLoading(false);
     if (result.success) navigate('/');
   };
@@ -212,7 +214,7 @@ const Login = () => {
           <form onSubmit={handleSubmit} style={styles.form}>
             {/* Email */}
             <div style={styles.fieldGroup}>
-              <label style={styles.label}>Username / Email</label>
+              <label style={styles.label}>Email</label>
               <div style={{ ...styles.inputWrap, borderColor: emailFocus ? '#00e87a' : 'rgba(0,232,122,0.15)', boxShadow: emailFocus ? '0 0 0 3px rgba(0,232,122,0.12)' : 'none' }}>
                 <span style={styles.inputIcon}>
                   <EmailIcon active={emailFocus} />
@@ -225,6 +227,7 @@ const Login = () => {
                   onFocus={() => setEmailFocus(true)}
                   onBlur={() => setEmailFocus(false)}
                   placeholder="Enter your email"
+                  autoComplete="email"
                   required
                   style={styles.input}
                 />
@@ -249,6 +252,7 @@ const Login = () => {
                   onFocus={() => setPassFocus(true)}
                   onBlur={() => setPassFocus(false)}
                   placeholder="Enter your password"
+                  autoComplete="current-password"
                   required
                   style={{ ...styles.input, letterSpacing: showPassword ? 'normal' : '0.15em' }}
                 />
@@ -269,8 +273,8 @@ const Login = () => {
               type="submit"
               disabled={loading}
               style={{ ...styles.submitBtn, opacity: loading ? 0.75 : 1 }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,232,122,0.45)'; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,232,122,0.3)'; }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,232,122,0.45)'; }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,232,122,0.3)'; }}
             >
               {loading ? (
                 <span style={styles.spinnerRow}>

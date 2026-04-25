@@ -36,12 +36,19 @@ API.interceptors.response.use(
     // Handle offline mutations (POST, PUT, DELETE)
     const isMutation = config && ['post', 'put', 'delete'].includes(config.method?.toLowerCase());
     const isNetworkError = !response || error.code === 'ERR_NETWORK' || error.code === 'ECONNABORTED';
+    
+    // EXCLUDE Auth requests from offline sync (they require immediate feedback)
+    const isAuthRequest = config.url?.includes('/auth/login') || 
+                         config.url?.includes('/auth/register') || 
+                         config.url?.includes('/auth/forgot-password');
 
-    if (isNetworkError && isMutation && !config.headers?.['X-Offline-Sync']) {
+    if (isNetworkError && isMutation && !isAuthRequest && !config.headers?.['X-Offline-Sync']) {
       try {
         let mutationData = config.data;
-        if (typeof mutationData === 'string') {
-          try { mutationData = JSON.parse(mutationData); } catch (e) { /* ignore */ }
+        
+        // Handle axios data which might be stringified or an object
+        if (typeof mutationData === 'string' && mutationData.startsWith('{')) {
+          try { mutationData = JSON.parse(mutationData); } catch (e) { /* use as is */ }
         }
 
         await queueMutation({

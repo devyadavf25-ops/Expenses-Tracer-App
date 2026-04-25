@@ -13,8 +13,8 @@ const connectDB = async () => {
     await sequelize.authenticate();
     console.log('✅ SQLite Database Connected');
     
-    // Sync all models - creates tables if they don't exist, safe on fresh DB
-    await sequelize.sync({ force: false });
+    // Sync all models - alter: true will add missing columns to existing tables
+    await sequelize.sync({ alter: true });
     console.log('📦 Database Models Synced');
   } catch (error) {
     console.error(`❌ Database Connection Error: ${error.message}`);

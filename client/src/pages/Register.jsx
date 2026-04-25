@@ -257,8 +257,8 @@ const Register = () => {
               type="submit"
               disabled={loading}
               style={{ ...styles.submitBtn, opacity: loading ? 0.75 : 1 }}
-              onMouseEnter={e => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,232,122,0.45)'; }}
-              onMouseLeave={e => { e.currentTarget.style.transform = 'translateY(0)'; e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,232,122,0.3)'; }}
+              onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 8px 32px rgba(0,232,122,0.45)'; }}
+              onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 4px 20px rgba(0,232,122,0.3)'; }}
             >
               {loading ? (
                 <span style={styles.spinnerRow}>
